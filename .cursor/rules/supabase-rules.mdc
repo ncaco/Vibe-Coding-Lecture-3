@@ -1,0 +1,1206 @@
+# Supabase 개발 규칙
+
+## 프로젝트 설정 및 초기화
+
+### Supabase 클라이언트 설정
+```typescript
+// lib/supabase/client.ts
+import { createClient } from '@supabase/supabase-js';
+
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+
+export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+  auth: {
+    autoRefreshToken: true,
+    persistSession: true,
+    detectSessionInUrl: true,
+  },
+  realtime: {
+    params: {
+      eventsPerSecond: 10,
+    },
+  },
+});
+
+// lib/supabase/server.ts - 서버 사이드 클라이언트
+import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
+import { cookies } from 'next/headers';
+
+export function createServerSupabaseClient() {
+  return createServerComponentClient({ cookies });
+}
+
+// lib/supabase/middleware.ts - 미들웨어용 클라이언트
+import { createMiddlewareClient } from '@supabase/auth-helpers-nextjs';
+import { NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
+
+export function createMiddlewareSupabaseClient(request: NextRequest) {
+  return createMiddlewareClient({ req: request, res: NextResponse.next() });
+}
+```
+
+### 환경 변수 설정
+```bash
+# .env.local
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
+```
+
+## 데이터베이스 스키마 설계
+
+### 데이터베이스 명칭 선언 규칙 (대한민국 표준화 지침)
+
+#### 테이블 명칭 규칙
+```sql
+-- 1. 테이블명은 한글 의미를 영문으로 표현
+-- 2. 복수형 사용 (사용자들 -> USERS)
+-- 3. 대문자와 언더스코어 사용
+-- 4. 약어 사용 금지 (USER -> USERS, POST -> POSTS)
+-- 5. 명사형 사용 (동사형 금지)
+-- 6. 도메인 용어 일관성 유지
+
+-- 예시: USERS, POSTS, COMMENTS, CATEGORIES, LIKES, FOLLOWS, NOTIFICATIONS, FILES
+```
+
+#### 컬럼 명칭 규칙
+```sql
+-- 1. 컬럼명은 한글 의미를 영문으로 표현
+-- 2. 대문자와 언더스코어 사용
+-- 3. 데이터 타입에 따른 접미사 사용
+-- 4. 외래키는 참조테이블명_ID 형태
+-- 5. 불리언 컬럼은 IS_ 또는 HAS_ 접두사 사용
+-- 6. 날짜/시간 컬럼은 _AT 접미사 사용
+-- 7. 수량 관련 컬럼은 _COUNT, _AMOUNT, _QUANTITY 접미사 사용
+
+-- 기본 컬럼 패턴
+ID UUID PRIMARY KEY,                    -- 고유 식별자
+CREATED_AT TIMESTAMP WITH TIME ZONE,    -- 생성 일시
+UPDATED_AT TIMESTAMP WITH TIME ZONE,    -- 수정 일시
+IS_ACTIVE BOOLEAN DEFAULT TRUE,         -- 활성 상태
+
+-- 외래키 컬럼
+USER_ID UUID REFERENCES USERS(ID),      -- 사용자 식별자
+AUTHOR_ID UUID REFERENCES USERS(ID),    -- 작성자 식별자
+
+-- 상태 관련 컬럼
+STATUS TEXT,                            -- 상태
+TYPE TEXT,                              -- 유형
+
+-- 내용 관련 컬럼
+TITLE TEXT,                             -- 제목
+CONTENT TEXT,                           -- 내용
+DESCRIPTION TEXT,                       -- 설명
+
+-- 수량 관련 컬럼
+COUNT INTEGER,                          -- 개수
+AMOUNT DECIMAL,                         -- 금액
+```
+
+#### 인덱스 명칭 규칙
+```sql
+-- 1. 인덱스명은 IDX_테이블명_컬럼명 형태
+-- 2. 복합 인덱스는 IDX_테이블명_컬럼1_컬럼2 형태
+-- 3. 유니크 인덱스는 UNQ_테이블명_컬럼명 형태
+-- 4. 부분 인덱스는 IDX_테이블명_컬럼명_조건 형태
+-- 5. 함수 인덱스는 IDX_테이블명_함수명_컬럼명 형태
+
+-- 기본 인덱스: IDX_테이블명_컬럼명
+-- 복합 인덱스: IDX_테이블명_컬럼1_컬럼2
+-- 유니크 인덱스: UNQ_테이블명_컬럼명
+```
+
+#### 제약조건 명칭 규칙
+```sql
+-- 1. 제약조건명은 의미를 명확히 표현
+-- 2. FK_테이블명_참조테이블명 형태 (외래키)
+-- 3. CK_테이블명_조건 형태 (체크 제약조건)
+-- 4. PK_테이블명 형태 (기본키)
+-- 5. UQ_테이블명_컬럼명 형태 (유니크 제약조건)
+-- 6. NN_테이블명_컬럼명 형태 (NOT NULL 제약조건)
+
+-- 외래키: FK_테이블명_참조테이블명
+-- 체크: CK_테이블명_조건
+-- 기본키: PK_테이블명
+-- 유니크: UQ_테이블명_컬럼명
+-- NOT NULL: NN_테이블명_컬럼명
+```
+
+#### 함수 및 프로시저 명칭 규칙
+```sql
+-- 1. 함수명은 동사형으로 시작 (GET_, CREATE_, UPDATE_, DELETE_)
+-- 2. 대문자와 언더스코어 사용
+-- 3. 의미를 명확히 표현
+-- 4. 반환 타입을 접미사로 표시 (_TEXT, _INTEGER, _BOOLEAN)
+
+-- 함수명: 동사형_대상_동작 (GET_USER_PROFILE, CREATE_POST, UPDATE_USER)
+-- 반환 타입 접미사: _TEXT, _INTEGER, _BOOLEAN
+```
+
+#### 뷰 명칭 규칙
+```sql
+-- 1. 뷰명은 V_로 시작
+-- 2. 대문자와 언더스코어 사용
+-- 3. 의미를 명확히 표현
+-- 4. 복합 뷰는 V_테이블1_테이블2 형태
+
+-- 뷰명: V_의미 (V_USER_PROFILES, V_POST_DETAILS, V_COMMENT_DETAILS)
+-- 복합 뷰: V_테이블1_테이블2
+```
+
+#### 트리거 명칭 규칙
+```sql
+-- 1. 트리거명은 TR_테이블명_동작_목적 형태
+-- 2. 대문자와 언더스코어 사용
+-- 3. 의미를 명확히 표현
+
+-- 트리거명: TR_테이블명_동작_목적 (TR_USERS_INSERT_PROFILE, TR_POSTS_UPDATE_TIMESTAMP)
+```
+
+#### 시퀀스 명칭 규칙
+```sql
+-- 1. 시퀀스명은 SEQ_테이블명_컬럼명 형태
+-- 2. 대문자와 언더스코어 사용
+-- 3. 의미를 명확히 표현
+
+-- 시퀀스명: SEQ_테이블명_컬럼명 (SEQ_USERS_ID, SEQ_POSTS_ID)
+```
+
+#### 도메인 타입 명칭 규칙
+```sql
+-- 1. 도메인 타입명은 DOMAIN_의미_타입 형태
+-- 2. 대문자와 언더스코어 사용
+-- 3. 의미를 명확히 표현
+
+-- 도메인 타입명: DOMAIN_의미_타입 (DOMAIN_EMAIL, DOMAIN_PASSWORD, DOMAIN_USERNAME)
+```
+
+#### 스키마 명칭 규칙
+```sql
+-- 1. 스키마명은 소문자 사용
+-- 2. 의미를 명확히 표현
+-- 3. 도메인별로 분리
+
+-- 스키마명: 소문자 (public, admin, logs, temp, archive)
+```
+
+#### 권한 및 역할 명칭 규칙
+```sql
+-- 1. 역할명은 ROLE_권한_대상 형태
+-- 2. 대문자와 언더스코어 사용
+-- 3. 의미를 명확히 표현
+
+-- 역할명: ROLE_권한_대상 (ROLE_ADMIN, ROLE_USER, ROLE_GUEST, ROLE_MODERATOR)
+```
+
+#### 명칭 규칙 요약 (대한민국 표준화 지침)
+```sql
+-- 1. 모든 데이터베이스 객체는 대문자와 언더스코어 사용
+-- 2. 한글 의미를 영문으로 명확히 표현
+-- 3. 약어 사용 금지, 의미를 명확히 표현
+-- 4. 일관성 있는 명명 패턴 적용
+
+-- 테이블: 복수형 명사 (USERS, POSTS, COMMENTS)
+-- 컬럼: 대문자와 언더스코어 (USER_ID, CREATED_AT, IS_ACTIVE)
+-- 인덱스: IDX_테이블명_컬럼명 (IDX_USERS_EMAIL)
+-- 제약조건: 타입_테이블명_조건 (FK_POSTS_USERS, CK_POSTS_TITLE_LENGTH)
+-- 함수: 동사형_대상_동작 (GET_USER_PROFILE, CREATE_POST)
+-- 뷰: V_의미 (V_USER_PROFILES, V_POST_DETAILS)
+-- 트리거: TR_테이블명_동작_목적 (TR_USERS_INSERT_PROFILE)
+-- 시퀀스: SEQ_테이블명_컬럼명 (SEQ_USERS_ID)
+-- 도메인: DOMAIN_의미_타입 (DOMAIN_EMAIL, DOMAIN_PASSWORD)
+-- 스키마: 소문자 (public, admin, logs)
+-- 역할: ROLE_권한_대상 (ROLE_ADMIN, ROLE_USER)
+
+-- 명명 규칙 우선순위
+-- 1. 가독성과 이해도
+-- 2. 일관성
+-- 3. 간결성
+-- 4. 확장성
+```
+
+### 테이블 설계 규칙
+```sql
+-- 사용자 테이블 (대한민국 표준화 지침 적용 - 대문자)
+CREATE TABLE USERS (
+  ID UUID REFERENCES auth.users(id) ON DELETE CASCADE PRIMARY KEY,
+  EMAIL TEXT UNIQUE NOT NULL,
+  FULL_NAME TEXT,
+  AVATAR_URL TEXT,
+  BIO TEXT,
+  WEBSITE TEXT,
+  CREATED_AT TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  UPDATED_AT TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- RLS (Row Level Security) 활성화
+ALTER TABLE USERS ENABLE ROW LEVEL SECURITY;
+
+-- 사용자 자신의 프로필만 읽기/수정 가능
+CREATE POLICY "Users can view own profile" ON USERS
+  FOR SELECT USING (auth.uid() = ID);
+
+CREATE POLICY "Users can update own profile" ON USERS
+  FOR UPDATE USING (auth.uid() = ID);
+
+-- 게시물 테이블 (대한민국 표준화 지침 적용 - 대문자)
+CREATE TABLE POSTS (
+  ID UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  TITLE TEXT NOT NULL,
+  CONTENT TEXT NOT NULL,
+  AUTHOR_ID UUID REFERENCES USERS(ID) ON DELETE CASCADE NOT NULL,
+  PUBLISHED BOOLEAN DEFAULT FALSE,
+  CREATED_AT TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  UPDATED_AT TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- RLS 활성화
+ALTER TABLE POSTS ENABLE ROW LEVEL SECURITY;
+
+-- 게시된 게시물은 모든 사용자가 읽기 가능
+CREATE POLICY "Published posts are viewable by everyone" ON POSTS
+  FOR SELECT USING (PUBLISHED = true);
+
+-- 작성자만 자신의 게시물 수정/삭제 가능
+CREATE POLICY "Users can update own posts" ON POSTS
+  FOR UPDATE USING (auth.uid() = AUTHOR_ID);
+
+CREATE POLICY "Users can delete own posts" ON POSTS
+  FOR DELETE USING (auth.uid() = AUTHOR_ID);
+
+-- 작성자만 게시물 생성 가능
+CREATE POLICY "Users can insert own posts" ON POSTS
+  FOR INSERT WITH CHECK (auth.uid() = AUTHOR_ID);
+```
+
+### 타입 정의
+```typescript
+// types/database.ts (대한민국 표준화 지침 적용 - 대문자)
+export interface Database {
+  public: {
+    Tables: {
+      USERS: {
+        Row: {
+          ID: string;
+          EMAIL: string;
+          FULL_NAME: string | null;
+          AVATAR_URL: string | null;
+          BIO: string | null;
+          WEBSITE: string | null;
+          CREATED_AT: string;
+          UPDATED_AT: string;
+        };
+        Insert: {
+          ID: string;
+          EMAIL: string;
+          FULL_NAME?: string | null;
+          AVATAR_URL?: string | null;
+          BIO?: string | null;
+          WEBSITE?: string | null;
+          CREATED_AT?: string;
+          UPDATED_AT?: string;
+        };
+        Update: {
+          ID?: string;
+          EMAIL?: string;
+          FULL_NAME?: string | null;
+          AVATAR_URL?: string | null;
+          BIO?: string | null;
+          WEBSITE?: string | null;
+          CREATED_AT?: string;
+          UPDATED_AT?: string;
+        };
+      };
+      POSTS: {
+        Row: {
+          ID: string;
+          TITLE: string;
+          CONTENT: string;
+          AUTHOR_ID: string;
+          PUBLISHED: boolean;
+          CREATED_AT: string;
+          UPDATED_AT: string;
+        };
+        Insert: {
+          ID?: string;
+          TITLE: string;
+          CONTENT: string;
+          AUTHOR_ID: string;
+          PUBLISHED?: boolean;
+          CREATED_AT?: string;
+          UPDATED_AT?: string;
+        };
+        Update: {
+          ID?: string;
+          TITLE?: string;
+          CONTENT?: string;
+          AUTHOR_ID?: string;
+          PUBLISHED?: boolean;
+          CREATED_AT?: string;
+          UPDATED_AT?: string;
+        };
+      };
+      COMMENTS: {
+        Row: {
+          ID: string;
+          CONTENT: string;
+          AUTHOR_ID: string;
+          POST_ID: string;
+          PARENT_ID: string | null;
+          CREATED_AT: string;
+          UPDATED_AT: string;
+        };
+        Insert: {
+          ID?: string;
+          CONTENT: string;
+          AUTHOR_ID: string;
+          POST_ID: string;
+          PARENT_ID?: string | null;
+          CREATED_AT?: string;
+          UPDATED_AT?: string;
+        };
+        Update: {
+          ID?: string;
+          CONTENT?: string;
+          AUTHOR_ID?: string;
+          POST_ID?: string;
+          PARENT_ID?: string | null;
+          CREATED_AT?: string;
+          UPDATED_AT?: string;
+        };
+      };
+      CATEGORIES: {
+        Row: {
+          ID: string;
+          NAME: string;
+          DESCRIPTION: string | null;
+          CREATED_AT: string;
+        };
+        Insert: {
+          ID?: string;
+          NAME: string;
+          DESCRIPTION?: string | null;
+          CREATED_AT?: string;
+        };
+        Update: {
+          ID?: string;
+          NAME?: string;
+          DESCRIPTION?: string | null;
+          CREATED_AT?: string;
+        };
+      };
+      LIKES: {
+        Row: {
+          ID: string;
+          USER_ID: string;
+          POST_ID: string;
+          CREATED_AT: string;
+        };
+        Insert: {
+          ID?: string;
+          USER_ID: string;
+          POST_ID: string;
+          CREATED_AT?: string;
+        };
+        Update: {
+          ID?: string;
+          USER_ID?: string;
+          POST_ID?: string;
+          CREATED_AT?: string;
+        };
+      };
+    };
+  };
+}
+
+// 타입 별칭 정의 (대한민국 표준화 지침 적용)
+export type User = Database['public']['Tables']['users']['Row'];
+export type UserInsert = Database['public']['Tables']['users']['Insert'];
+export type UserUpdate = Database['public']['Tables']['users']['Update'];
+
+export type Post = Database['public']['Tables']['posts']['Row'];
+export type PostInsert = Database['public']['Tables']['posts']['Insert'];
+export type PostUpdate = Database['public']['Tables']['posts']['Update'];
+
+export type Comment = Database['public']['Tables']['comments']['Row'];
+export type CommentInsert = Database['public']['Tables']['comments']['Insert'];
+export type CommentUpdate = Database['public']['Tables']['comments']['Update'];
+
+export type Category = Database['public']['Tables']['categories']['Row'];
+export type CategoryInsert = Database['public']['Tables']['categories']['Insert'];
+export type CategoryUpdate = Database['public']['Tables']['categories']['Update'];
+
+export type Like = Database['public']['Tables']['likes']['Row'];
+export type LikeInsert = Database['public']['Tables']['likes']['Insert'];
+export type LikeUpdate = Database['public']['Tables']['likes']['Update'];
+```
+
+## 인증 관리
+
+### 인증 훅 및 유틸리티
+```typescript
+// hooks/useAuth.ts
+import { useEffect, useState } from 'react';
+import { User, Session } from '@supabase/supabase-js';
+import { supabase } from '@/lib/supabase/client';
+
+export function useAuth() {
+  const [user, setUser] = useState<User | null>(null);
+  const [session, setSession] = useState<Session | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    // 현재 세션 가져오기
+    const getSession = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      setSession(session);
+      setUser(session?.user ?? null);
+      setLoading(false);
+    };
+
+    getSession();
+
+    // 인증 상태 변경 구독
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      async (event, session) => {
+        setSession(session);
+        setUser(session?.user ?? null);
+        setLoading(false);
+      }
+    );
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const signIn = async (email: string, password: string) => {
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+    return { error };
+  };
+
+  const signUp = async (email: string, password: string) => {
+    const { error } = await supabase.auth.signUp({
+      email,
+      password,
+    });
+    return { error };
+  };
+
+  const signOut = async () => {
+    const { error } = await supabase.auth.signOut();
+    return { error };
+  };
+
+  const resetPassword = async (email: string) => {
+    const { error } = await supabase.auth.resetPasswordForEmail(email);
+    return { error };
+  };
+
+  return {
+    user,
+    session,
+    loading,
+    signIn,
+    signUp,
+    signOut,
+    resetPassword,
+  };
+}
+
+// lib/auth/guards.ts - 인증 가드
+import { redirect } from 'next/navigation';
+import { createServerSupabaseClient } from '@/lib/supabase/server';
+
+export async function requireAuth() {
+  const supabase = createServerSupabaseClient();
+  const { data: { session } } = await supabase.auth.getSession();
+  
+  if (!session) {
+    redirect('/login');
+  }
+  
+  return session;
+}
+
+export async function requireGuest() {
+  const supabase = createServerSupabaseClient();
+  const { data: { session } } = await supabase.auth.getSession();
+  
+  if (session) {
+    redirect('/dashboard');
+  }
+}
+```
+
+### 인증 컴포넌트
+```typescript
+// components/auth/LoginForm.tsx
+'use client';
+
+import { useState } from 'react';
+import { useAuth } from '@/hooks/useAuth';
+import { useRouter } from 'next/navigation';
+
+export function LoginForm() {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  
+  const { signIn } = useAuth();
+  const router = useRouter();
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
+
+    const { error } = await signIn(email, password);
+    
+    if (error) {
+      setError(error.message);
+    } else {
+      router.push('/dashboard');
+    }
+    
+    setLoading(false);
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <div>
+        <label htmlFor="email" className="block text-sm font-medium">
+          이메일
+        </label>
+        <input
+          id="email"
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+        />
+      </div>
+      
+      <div>
+        <label htmlFor="password" className="block text-sm font-medium">
+          비밀번호
+        </label>
+        <input
+          id="password"
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
+          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+        />
+      </div>
+      
+      {error && (
+        <div className="text-red-600 text-sm">{error}</div>
+      )}
+      
+      <button
+        type="submit"
+        disabled={loading}
+        className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 disabled:opacity-50"
+      >
+        {loading ? '로그인 중...' : '로그인'}
+      </button>
+    </form>
+  );
+}
+```
+
+## 데이터베이스 작업
+
+### 데이터베이스 훅
+```typescript
+// hooks/useDatabase.ts
+import { useEffect, useState } from 'react';
+import { supabase } from '@/lib/supabase/client';
+import type { Post, PostInsert, PostUpdate } from '@/types/database';
+
+export function usePosts() {
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetchPosts();
+  }, []);
+
+  const fetchPosts = async () => {
+    try {
+      setLoading(true);
+      const { data, error } = await supabase
+        .from('posts')
+        .select('*')
+        .eq('published', true)
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      setPosts(data || []);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : '알 수 없는 오류');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const createPost = async (post: PostInsert) => {
+    try {
+      const { data, error } = await supabase
+        .from('posts')
+        .insert(post)
+        .select()
+        .single();
+
+      if (error) throw error;
+      
+      setPosts(prev => [data, ...prev]);
+      return { data, error: null };
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : '알 수 없는 오류';
+      setError(errorMessage);
+      return { data: null, error: errorMessage };
+    }
+  };
+
+  const updatePost = async (id: string, updates: PostUpdate) => {
+    try {
+      const { data, error } = await supabase
+        .from('posts')
+        .update(updates)
+        .eq('id', id)
+        .select()
+        .single();
+
+      if (error) throw error;
+      
+      setPosts(prev => prev.map(post => 
+        post.id === id ? data : post
+      ));
+      return { data, error: null };
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : '알 수 없는 오류';
+      setError(errorMessage);
+      return { data: null, error: errorMessage };
+    }
+  };
+
+  const deletePost = async (id: string) => {
+    try {
+      const { error } = await supabase
+        .from('posts')
+        .delete()
+        .eq('id', id);
+
+      if (error) throw error;
+      
+      setPosts(prev => prev.filter(post => post.id !== id));
+      return { error: null };
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : '알 수 없는 오류';
+      setError(errorMessage);
+      return { error: errorMessage };
+    }
+  };
+
+  return {
+    posts,
+    loading,
+    error,
+    createPost,
+    updatePost,
+    deletePost,
+    refetch: fetchPosts,
+  };
+}
+
+// hooks/useUser.ts (대한민국 표준화 지침 적용)
+import { useEffect, useState } from 'react';
+import { supabase } from '@/lib/supabase/client';
+import { useAuth } from '@/hooks/useAuth';
+import type { User, UserUpdate } from '@/types/database';
+
+export function useUser() {
+  const { user } = useAuth();
+  const [userProfile, setUserProfile] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (user) {
+      fetchUserProfile();
+    }
+  }, [user]);
+
+  const fetchUserProfile = async () => {
+    if (!user) return;
+
+    try {
+      setLoading(true);
+      const { data, error } = await supabase
+        .from('users')
+        .select('*')
+        .eq('id', user.id)
+        .single();
+
+      if (error) throw error;
+      setUserProfile(data);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : '알 수 없는 오류');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const updateUserProfile = async (updates: UserUpdate) => {
+    if (!user) return { error: '사용자가 로그인되지 않았습니다' };
+
+    try {
+      const { data, error } = await supabase
+        .from('users')
+        .update(updates)
+        .eq('id', user.id)
+        .select()
+        .single();
+
+      if (error) throw error;
+      
+      setUserProfile(data);
+      return { data, error: null };
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : '알 수 없는 오류';
+      setError(errorMessage);
+      return { data: null, error: errorMessage };
+    }
+  };
+
+  return {
+    userProfile,
+    loading,
+    error,
+    updateUserProfile,
+    refetch: fetchUserProfile,
+  };
+}
+```
+
+## 실시간 기능
+
+### 실시간 구독
+```typescript
+// hooks/useRealtime.ts
+import { useEffect, useState } from 'react';
+import { supabase } from '@/lib/supabase/client';
+import type { Post } from '@/types/database';
+
+export function useRealtimePosts() {
+  const [posts, setPosts] = useState<Post[]>([]);
+
+  useEffect(() => {
+    // 초기 데이터 로드
+    fetchPosts();
+
+    // 실시간 구독 설정
+    const channel = supabase
+      .channel('posts_changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'posts',
+        },
+        (payload) => {
+          console.log('실시간 변경:', payload);
+          
+          if (payload.eventType === 'INSERT') {
+            setPosts(prev => [payload.new as Post, ...prev]);
+          } else if (payload.eventType === 'UPDATE') {
+            setPosts(prev => prev.map(post => 
+              post.id === payload.new.id ? payload.new as Post : post
+            ));
+          } else if (payload.eventType === 'DELETE') {
+            setPosts(prev => prev.filter(post => post.id !== payload.old.id));
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, []);
+
+  const fetchPosts = async () => {
+    const { data } = await supabase
+      .from('posts')
+      .select('*')
+      .eq('published', true)
+      .order('created_at', { ascending: false });
+    
+    setPosts(data || []);
+  };
+
+  return { posts };
+}
+```
+
+## 파일 업로드
+
+### 스토리지 관리
+```typescript
+// lib/storage.ts
+import { supabase } from '@/lib/supabase/client';
+
+export async function uploadFile(
+  file: File,
+  bucket: string = 'avatars',
+  path?: string
+) {
+  const fileExt = file.name.split('.').pop();
+  const fileName = `${Math.random()}.${fileExt}`;
+  const filePath = path ? `${path}/${fileName}` : fileName;
+
+  const { data, error } = await supabase.storage
+    .from(bucket)
+    .upload(filePath, file);
+
+  if (error) {
+    throw error;
+  }
+
+  const { data: { publicUrl } } = supabase.storage
+    .from(bucket)
+    .getPublicUrl(filePath);
+
+  return { publicUrl, filePath };
+}
+
+export async function deleteFile(bucket: string, path: string) {
+  const { error } = await supabase.storage
+    .from(bucket)
+    .remove([path]);
+
+  if (error) {
+    throw error;
+  }
+}
+
+// components/FileUpload.tsx
+'use client';
+
+import { useState } from 'react';
+import { uploadFile } from '@/lib/storage';
+
+interface FileUploadProps {
+  onUpload: (url: string) => void;
+  bucket?: string;
+  path?: string;
+  accept?: string;
+}
+
+export function FileUpload({ onUpload, bucket, path, accept }: FileUploadProps) {
+  const [uploading, setUploading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    try {
+      setUploading(true);
+      setError(null);
+      
+      const { publicUrl } = await uploadFile(file, bucket, path);
+      onUpload(publicUrl);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : '업로드 실패');
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  return (
+    <div>
+      <input
+        type="file"
+        onChange={handleFileChange}
+        accept={accept}
+        disabled={uploading}
+        className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+      />
+      {uploading && <p className="mt-2 text-sm text-gray-600">업로드 중...</p>}
+      {error && <p className="mt-2 text-sm text-red-600">{error}</p>}
+    </div>
+  );
+}
+```
+
+## 서버 액션
+
+### 서버 사이드 데이터베이스 작업
+```typescript
+// lib/actions/posts.ts
+'use server';
+
+import { createServerSupabaseClient } from '@/lib/supabase/server';
+import { revalidatePath } from 'next/cache';
+import type { PostInsert, PostUpdate } from '@/types/database';
+
+export async function createPost(post: PostInsert) {
+  const supabase = createServerSupabaseClient();
+  
+  const { data, error } = await supabase
+    .from('posts')
+    .insert(post)
+    .select()
+    .single();
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  revalidatePath('/posts');
+  return data;
+}
+
+export async function updatePost(id: string, updates: PostUpdate) {
+  const supabase = createServerSupabaseClient();
+  
+  const { data, error } = await supabase
+    .from('posts')
+    .update(updates)
+    .eq('id', id)
+    .select()
+    .single();
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  revalidatePath('/posts');
+  revalidatePath(`/posts/${id}`);
+  return data;
+}
+
+export async function deletePost(id: string) {
+  const supabase = createServerSupabaseClient();
+  
+  const { error } = await supabase
+    .from('posts')
+    .delete()
+    .eq('id', id);
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  revalidatePath('/posts');
+}
+```
+
+## 에러 처리 및 로깅
+
+### 에러 처리 유틸리티
+```typescript
+// lib/errors.ts
+import { PostgrestError } from '@supabase/supabase-js';
+
+export function handleSupabaseError(error: PostgrestError | Error) {
+  if ('code' in error) {
+    // Supabase 에러
+    switch (error.code) {
+      case 'PGRST116':
+        return '인증이 필요합니다. 다시 로그인해주세요.';
+      case 'PGRST301':
+        return '권한이 없습니다.';
+      case 'PGRST302':
+        return '데이터를 찾을 수 없습니다.';
+      default:
+        return error.message || '알 수 없는 오류가 발생했습니다.';
+    }
+  }
+  
+  return error.message || '알 수 없는 오류가 발생했습니다.';
+}
+
+// components/ErrorBoundary.tsx
+'use client';
+
+import { Component, ReactNode } from 'react';
+
+interface Props {
+  children: ReactNode;
+  fallback?: ReactNode;
+}
+
+interface State {
+  hasError: boolean;
+  error?: Error;
+}
+
+export class SupabaseErrorBoundary extends Component<Props, State> {
+  constructor(props: Props) {
+    super(props);
+    this.state = { hasError: false };
+  }
+
+  static getDerivedStateFromError(error: Error): State {
+    return { hasError: true, error };
+  }
+
+  componentDidCatch(error: Error, errorInfo: any) {
+    console.error('Supabase 에러:', error, errorInfo);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return this.props.fallback || (
+        <div className="p-4 bg-red-50 border border-red-200 rounded-md">
+          <h3 className="text-red-800 font-medium">오류가 발생했습니다</h3>
+          <p className="text-red-600 text-sm mt-1">
+            {this.state.error?.message}
+          </p>
+        </div>
+      );
+    }
+
+    return this.props.children;
+  }
+}
+```
+
+## 성능 최적화
+
+### 쿼리 최적화
+```typescript
+// lib/queries.ts
+import { supabase } from '@/lib/supabase/client';
+
+// 페이지네이션을 위한 쿼리
+export async function getPostsWithPagination(
+  page: number = 1,
+  limit: number = 10
+) {
+  const from = (page - 1) * limit;
+  const to = from + limit - 1;
+
+  const { data, error, count } = await supabase
+    .from('posts')
+    .select('*, profiles(full_name, avatar_url)', { count: 'exact' })
+    .eq('published', true)
+    .order('created_at', { ascending: false })
+    .range(from, to);
+
+  return { data, error, count };
+}
+
+// 검색을 위한 쿼리
+export async function searchPosts(query: string) {
+  const { data, error } = await supabase
+    .from('posts')
+    .select('*, profiles(full_name, avatar_url)')
+    .or(`title.ilike.%${query}%,content.ilike.%${query}%`)
+    .eq('published', true)
+    .order('created_at', { ascending: false });
+
+  return { data, error };
+}
+
+// 캐싱을 위한 쿼리 키 관리
+export const queryKeys = {
+  posts: ['posts'] as const,
+  post: (id: string) => ['posts', id] as const,
+  profile: (id: string) => ['profiles', id] as const,
+  search: (query: string) => ['search', query] as const,
+};
+```
+
+## 보안 규칙
+
+### RLS (Row Level Security) 정책
+```sql
+-- 기본 보안 정책
+-- 1. 인증된 사용자만 데이터 접근 가능
+-- 2. 사용자는 자신의 데이터만 수정 가능
+-- 3. 공개 데이터는 모든 사용자가 읽기 가능
+
+-- 사용자 테이블 보안 (대한민국 표준화 지침 적용)
+CREATE POLICY "Public users are viewable by everyone" ON users
+  FOR SELECT USING (true);
+
+CREATE POLICY "Users can update own profile" ON users
+  FOR UPDATE USING (auth.uid() = id);
+
+-- 게시물 테이블 보안
+CREATE POLICY "Published posts are viewable by everyone" ON posts
+  FOR SELECT USING (published = true);
+
+CREATE POLICY "Users can view own posts" ON posts
+  FOR SELECT USING (auth.uid() = author_id);
+
+CREATE POLICY "Users can insert own posts" ON posts
+  FOR INSERT WITH CHECK (auth.uid() = author_id);
+
+CREATE POLICY "Users can update own posts" ON posts
+  FOR UPDATE USING (auth.uid() = author_id);
+
+CREATE POLICY "Users can delete own posts" ON posts
+  FOR DELETE USING (auth.uid() = author_id);
+```
+
+## 테스트
+
+### Supabase 테스트 설정
+```typescript
+// __tests__/setup/supabase.ts
+import { createClient } from '@supabase/supabase-js';
+
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+
+export const testSupabase = createClient(supabaseUrl, supabaseAnonKey);
+
+// 테스트용 데이터 정리 (대한민국 표준화 지침 적용)
+export async function cleanupTestData() {
+  await testSupabase.from('posts').delete().neq('id', '00000000-0000-0000-0000-000000000000');
+  await testSupabase.from('users').delete().neq('id', '00000000-0000-0000-0000-000000000000');
+  await testSupabase.from('comments').delete().neq('id', '00000000-0000-0000-0000-000000000000');
+  await testSupabase.from('categories').delete().neq('id', '00000000-0000-0000-0000-000000000000');
+  await testSupabase.from('likes').delete().neq('id', '00000000-0000-0000-0000-000000000000');
+}
+
+// __tests__/hooks/useAuth.test.ts
+import { renderHook, act } from '@testing-library/react';
+import { useAuth } from '@/hooks/useAuth';
+import { testSupabase } from '../setup/supabase';
+
+describe('useAuth', () => {
+  beforeEach(async () => {
+    await testSupabase.auth.signOut();
+  });
+
+  it('should handle sign in', async () => {
+    const { result } = renderHook(() => useAuth());
+
+    await act(async () => {
+      const { error } = await result.current.signIn('test@example.com', 'password');
+      expect(error).toBeNull();
+    });
+  });
+});
+```
+
+이러한 규칙들을 통해 Supabase를 활용한 안전하고 효율적인 개발을 할 수 있습니다.
+description:
+globs:
+alwaysApply: false
+---
