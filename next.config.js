@@ -2,6 +2,30 @@
 const nextConfig = {
   // App Router는 Next.js 14에서 기본적으로 활성화됨
   
+  // 이미지 도메인 설정
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'images.unsplash.com',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'via.placeholder.com',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'picsum.photos',
+        port: '',
+        pathname: '/**',
+      },
+    ],
+  },
+  
   // 개발 서버 설정
   experimental: {
     // Fast Refresh 최적화

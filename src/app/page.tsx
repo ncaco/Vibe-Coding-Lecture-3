@@ -2,6 +2,9 @@ import Link from 'next/link';
 import Button from '@/components/ui/Button';
 import Card from '@/components/ui/Card';
 import Badge from '@/components/ui/Badge';
+import Hero from '@/components/sections/Hero';
+import Carousel from '@/components/ui/Carousel';
+import ImageCard from '@/components/ui/ImageCard';
 
 export default function Home() {
   const features = [
@@ -37,36 +40,12 @@ export default function Home() {
   return (
     <main className="min-h-screen">
       {/* Hero Section */}
-      <section className="section-padding">
-        <div className="container-custom">
-          <div className="text-center max-w-4xl mx-auto">
-            <Badge variant="primary" className="mb-6">
-              🚀 Vibe Coding Lecture 3
-            </Badge>
-            <h1 className="text-5xl md:text-6xl font-bold text-text mb-6 leading-tight">
-              Plan and build your product with{' '}
-              <span className="heading-gradient">modern design system</span>
-              <span className="text-accent"> 🔥 Hot Reload Test!</span>
-            </h1>
-            <p className="text-xl text-text-secondary mb-8 max-w-2xl mx-auto">
-              Meet the system for modern software development. Streamline your design process 
-              with purpose-built components and Linear-inspired aesthetics.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link href="/components">
-                <Button size="lg">
-                  Explore Components
-                </Button>
-              </Link>
-              <Link href="/docs">
-                <Button variant="secondary" size="lg">
-                  View Documentation
-                </Button>
-              </Link>
-            </div>
-          </div>
-        </div>
-      </section>
+      <Hero 
+        title="Plan and build your product with modern design system"
+        subtitle="Vibe Coding Lecture 3"
+        description="Meet the system for modern software development. Streamline your design process with purpose-built components and Linear-inspired aesthetics."
+        badge="🚀 Hot Reload Test!"
+      />
 
       {/* Stats Section */}
       <section className="py-16 bg-background-secondary">
@@ -81,6 +60,49 @@ export default function Home() {
               </div>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* Carousel Section */}
+      <section className="section-padding bg-background-secondary">
+        <div className="container-custom">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold text-text mb-4">
+              Interactive Carousel
+            </h2>
+            <p className="text-xl text-text-secondary max-w-2xl mx-auto">
+              Experience our smooth carousel component with auto-play, navigation, and keyboard controls.
+            </p>
+          </div>
+          
+          <Carousel
+            items={[
+              <div key="1" className="h-96 bg-gradient-to-br from-accent/20 to-background-secondary rounded-2xl flex items-center justify-center">
+                <div className="text-center">
+                  <div className="text-6xl mb-4">🎨</div>
+                  <h3 className="text-2xl font-bold text-text mb-2">Design System</h3>
+                  <p className="text-text-secondary">Modern and consistent design components</p>
+                </div>
+              </div>,
+              <div key="2" className="h-96 bg-gradient-to-br from-green-500/20 to-background-secondary rounded-2xl flex items-center justify-center">
+                <div className="text-center">
+                  <div className="text-6xl mb-4">⚡</div>
+                  <h3 className="text-2xl font-bold text-text mb-2">Performance</h3>
+                  <p className="text-text-secondary">Optimized for speed and efficiency</p>
+                </div>
+              </div>,
+              <div key="3" className="h-96 bg-gradient-to-br from-purple-500/20 to-background-secondary rounded-2xl flex items-center justify-center">
+                <div className="text-center">
+                  <div className="text-6xl mb-4">🚀</div>
+                  <h3 className="text-2xl font-bold text-text mb-2">Innovation</h3>
+                  <p className="text-text-secondary">Cutting-edge development practices</p>
+                </div>
+              </div>
+            ]}
+            autoPlay={true}
+            interval={4000}
+            className="max-w-4xl mx-auto"
+          />
         </div>
       </section>
 
@@ -109,6 +131,56 @@ export default function Home() {
                 </p>
               </Card>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Image Cards Section */}
+      <section className="section-padding bg-background-secondary">
+        <div className="container-custom">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold text-text mb-4">
+              Featured Projects
+            </h2>
+            <p className="text-xl text-text-secondary max-w-2xl mx-auto">
+              Explore our latest projects and see how our design system comes to life.
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <ImageCard
+              image={{
+                src: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&h=600&fit=crop",
+                alt: "Dashboard Design"
+              }}
+              title="Modern Dashboard"
+              description="A sleek and intuitive dashboard design with real-time analytics and customizable widgets."
+              badge="New"
+              badgeVariant="success"
+              href="/projects/dashboard"
+            />
+            <ImageCard
+              image={{
+                src: "https://images.unsplash.com/photo-1551650975-87deedd944c3?w=800&h=600&fit=crop",
+                alt: "Mobile App"
+              }}
+              title="Mobile App Design"
+              description="Responsive mobile application with smooth animations and native-like experience."
+              badge="Popular"
+              badgeVariant="primary"
+              href="/projects/mobile-app"
+            />
+            <ImageCard
+              image={{
+                src: "https://images.unsplash.com/photo-1551434678-e076c223a692?w=800&h=600&fit=crop",
+                alt: "Web Application"
+              }}
+              title="Web Application"
+              description="Full-stack web application with modern architecture and scalable design."
+              badge="Featured"
+              badgeVariant="warning"
+              href="/projects/web-app"
+            />
           </div>
         </div>
       </section>

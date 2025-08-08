@@ -6,6 +6,8 @@ import Card from '@/components/ui/Card';
 import Input from '@/components/ui/Input';
 import Badge from '@/components/ui/Badge';
 import Modal from '@/components/ui/Modal';
+import Carousel from '@/components/ui/Carousel';
+import ImageCard from '@/components/ui/ImageCard';
 
 export default function ComponentsPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -312,6 +314,127 @@ export default function ComponentsPage() {
               </div>
             </div>
           </Modal>
+        </section>
+
+        {/* Carousel Component */}
+        <section className="mb-16">
+          <h2 className="text-3xl font-bold text-text mb-8">Carousel</h2>
+          
+          <div className="mb-8">
+            <h3 className="text-xl font-semibold text-text mb-6">Interactive Carousel</h3>
+            <Carousel
+              items={[
+                <div key="1" className="h-64 bg-gradient-to-br from-accent/20 to-background-secondary rounded-2xl flex items-center justify-center">
+                  <div className="text-center">
+                    <div className="text-4xl mb-4">🎨</div>
+                    <h3 className="text-xl font-bold text-text mb-2">Design System</h3>
+                    <p className="text-text-secondary">Modern and consistent design components</p>
+                  </div>
+                </div>,
+                <div key="2" className="h-64 bg-gradient-to-br from-green-500/20 to-background-secondary rounded-2xl flex items-center justify-center">
+                  <div className="text-center">
+                    <div className="text-4xl mb-4">⚡</div>
+                    <h3 className="text-xl font-bold text-text mb-2">Performance</h3>
+                    <p className="text-text-secondary">Optimized for speed and efficiency</p>
+                  </div>
+                </div>,
+                <div key="3" className="h-64 bg-gradient-to-br from-purple-500/20 to-background-secondary rounded-2xl flex items-center justify-center">
+                  <div className="text-center">
+                    <div className="text-4xl mb-4">🚀</div>
+                    <h3 className="text-xl font-bold text-text mb-2">Innovation</h3>
+                    <p className="text-text-secondary">Cutting-edge development practices</p>
+                  </div>
+                </div>
+              ]}
+              autoPlay={true}
+              interval={3000}
+              className="max-w-2xl mx-auto"
+            />
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <Card>
+              <h3 className="text-lg font-semibold text-text mb-4">Features</h3>
+              <ul className="text-text-secondary space-y-2">
+                <li>• Auto-play with customizable interval</li>
+                <li>• Navigation arrows and dots</li>
+                <li>• Keyboard navigation (Arrow keys)</li>
+                <li>• Touch/swipe support</li>
+                <li>• Smooth transitions</li>
+              </ul>
+            </Card>
+            <Card>
+              <h3 className="text-lg font-semibold text-text mb-4">Props</h3>
+              <ul className="text-text-secondary space-y-2">
+                <li>• <code>items</code>: Array of React nodes</li>
+                <li>• <code>autoPlay</code>: Boolean for auto-play</li>
+                <li>• <code>interval</code>: Auto-play interval in ms</li>
+                <li>• <code>showDots</code>: Show dot indicators</li>
+                <li>• <code>showArrows</code>: Show navigation arrows</li>
+              </ul>
+            </Card>
+          </div>
+        </section>
+
+        {/* Image Card Component */}
+        <section className="mb-16">
+          <h2 className="text-3xl font-bold text-text mb-8">Image Cards</h2>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+            <ImageCard
+              image={{
+                src: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400&h=300&fit=crop",
+                alt: "Dashboard Design"
+              }}
+              title="Modern Dashboard"
+              description="A sleek and intuitive dashboard design with real-time analytics."
+              badge="New"
+              badgeVariant="success"
+            />
+            <ImageCard
+              image={{
+                src: "https://images.unsplash.com/photo-1551650975-87deedd944c3?w=400&h=300&fit=crop",
+                alt: "Mobile App"
+              }}
+              title="Mobile App Design"
+              description="Responsive mobile application with smooth animations."
+              badge="Popular"
+              badgeVariant="primary"
+            />
+            <ImageCard
+              image={{
+                src: "https://images.unsplash.com/photo-1551434678-e076c223a692?w=400&h=300&fit=crop",
+                alt: "Web Application"
+              }}
+              title="Web Application"
+              description="Full-stack web application with modern architecture."
+              badge="Featured"
+              badgeVariant="warning"
+            />
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <Card>
+              <h3 className="text-lg font-semibold text-text mb-4">Features</h3>
+              <ul className="text-text-secondary space-y-2">
+                <li>• Responsive image with Next.js Image</li>
+                <li>• Hover effects and animations</li>
+                <li>• Configurable badges</li>
+                <li>• Optional click handlers</li>
+                <li>• Customizable styling</li>
+              </ul>
+            </Card>
+            <Card>
+              <h3 className="text-lg font-semibold text-text mb-4">Props</h3>
+              <ul className="text-text-secondary space-y-2">
+                <li>• <code>image</code>: Image object with src, alt</li>
+                <li>• <code>title</code>: Card title</li>
+                <li>• <code>description</code>: Card description</li>
+                <li>• <code>badge</code>: Optional badge text</li>
+                <li>• <code>badgeVariant</code>: Badge color variant</li>
+              </ul>
+            </Card>
+          </div>
         </section>
 
         {/* Design Tokens */}
