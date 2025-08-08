@@ -8,6 +8,7 @@ import Badge from '@/components/ui/Badge';
 import Modal from '@/components/ui/Modal';
 import Carousel from '@/components/ui/Carousel';
 import ImageCard from '@/components/ui/ImageCard';
+import Hero from '@/components/sections/Hero';
 
 export default function ComponentsPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -43,20 +44,26 @@ export default function ComponentsPage() {
 
   return (
     <div className="min-h-screen bg-background">
+      {/* Hero Section */}
+      <Hero
+        title="Component Library"
+        subtitle="Vibe Design System"
+        description="Explore our comprehensive collection of reusable components built with Linear-inspired design principles and TypeScript. Every component is crafted for performance, accessibility, and developer experience."
+        badge="🎨 20+ Components Available"
+        primaryAction={{
+          label: "Get Started",
+          href: "#buttons"
+        }}
+        secondaryAction={{
+          label: "View Documentation",
+          href: "/docs"
+        }}
+      />
+
       <div className="container-custom py-16">
-        {/* Header */}
-        <div className="text-center mb-16">
-          <h1 className="text-5xl font-bold text-text mb-6">
-            Component Library
-          </h1>
-          <p className="text-xl text-text-secondary max-w-2xl mx-auto">
-            Explore our comprehensive collection of reusable components built with 
-            Linear-inspired design principles and TypeScript.
-          </p>
-        </div>
 
         {/* Button Components */}
-        <section className="mb-16">
+        <section id="buttons" className="mb-16">
           <h2 className="text-3xl font-bold text-text mb-8">Buttons</h2>
           
           {/* Button Variants */}
