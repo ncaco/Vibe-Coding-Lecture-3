@@ -2,6 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
+/* 커스텀 애니메이션 import */
+@import '../styles/animations.css';
+
 @layer base {
   * {
     @apply border-border;

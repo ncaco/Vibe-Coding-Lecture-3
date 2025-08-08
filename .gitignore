@@ -44,3 +44,13 @@ coverage/
 # 기타 Next.js 관련
 *.sublime-workspace
 *.sublime-project
+
+# 캐시 파일들
+.next-env.d.ts
+node_modules/.cache/
+.cache/
+.turbo/
+
+# 임시 파일들
+*.tmp
+*.temp
