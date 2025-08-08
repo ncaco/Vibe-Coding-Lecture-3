@@ -46,6 +46,7 @@ export default function Home() {
             <h1 className="text-5xl md:text-6xl font-bold text-text mb-6 leading-tight">
               Plan and build your product with{' '}
               <span className="heading-gradient">modern design system</span>
+              <span className="text-accent"> 🔥 Hot Reload Test!</span>
             </h1>
             <p className="text-xl text-text-secondary mb-8 max-w-2xl mx-auto">
               Meet the system for modern software development. Streamline your design process 
