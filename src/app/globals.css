@@ -16,7 +16,33 @@
   }
   
   html {
-    scroll-behavior: smooth;
+    /* scroll-behavior: smooth; */
+  }
+
+  /* 스크롤바 숨기기 */
+  body {
+    /* Firefox */
+    scrollbar-width: none;
+    /* IE and Edge */
+    -ms-overflow-style: none;
+  }
+
+  /* Webkit 기반 브라우저 (Chrome, Safari, Edge) */
+  body::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* 전체 페이지 스크롤바 숨기기 */
+  html {
+    /* Firefox */
+    scrollbar-width: none;
+    /* IE and Edge */
+    -ms-overflow-style: none;
+  }
+
+  /* Webkit 기반 브라우저 (Chrome, Safari, Edge) */
+  html::-webkit-scrollbar {
+    display: none;
   }
 }
 

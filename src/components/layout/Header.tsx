@@ -1,13 +1,12 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import Button from '../ui/Button';
 import { cn } from '@/lib/utils';
 
 const Header: React.FC = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isScrolled, setIsScrolled] = useState(false);
 
   const navigation = [
     { name: 'Product', href: '/features' },
@@ -18,21 +17,10 @@ const Header: React.FC = () => {
     { name: 'Contact', href: '/contact' },
   ];
 
-  // 스크롤 감지
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 10);
-    };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
   return (
     <header className={cn(
       "sticky top-0 z-40 transition-all duration-300 border-b",
-      isScrolled 
-        ? "bg-background/95 backdrop-blur-md border-border shadow-lg" 
-        : "bg-background/80 backdrop-blur-md border-transparent"
+      "bg-background/95 backdrop-blur-md border-border shadow-lg"
     )}>
       <div className="container-custom">
         <div className="flex items-center justify-between h-16">
