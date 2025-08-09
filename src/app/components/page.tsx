@@ -3,9 +3,9 @@
 import React, { useState } from 'react';
 import Button from '@/components/ui/Button';
 import Card from '@/components/ui/Card';
-import Input from '@/components/ui/Input';
 import Badge from '@/components/ui/Badge';
 import Modal from '@/components/ui/Modal';
+import Input from '@/components/ui/Input';
 import Carousel from '@/components/ui/Carousel';
 import ImageCard from '@/components/ui/ImageCard';
 import Hero from '@/components/sections/Hero';
@@ -165,7 +165,7 @@ export default function ComponentsPage() {
               <Input 
                 placeholder="Enter your text..."
                 value={inputValue}
-                onChange={(e) => setInputValue(e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setInputValue(e.target.value)}
               />
             </Card>
             

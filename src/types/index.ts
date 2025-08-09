@@ -66,3 +66,59 @@ export interface NavigationItem {
   icon?: React.ComponentType<{ className?: string }>;
   children?: NavigationItem[];
 }
+
+// Supabase 관련 타입들
+export interface Database {
+  public: {
+    Tables: {
+      instruments: {
+        Row: {
+          id: number;
+          name: string;
+        };
+        Insert: {
+          id?: number;
+          name: string;
+        };
+        Update: {
+          id?: number;
+          name?: string;
+        };
+      };
+      // 여기에 추가 데이터베이스 테이블 타입들을 추가할 수 있습니다
+      [key: string]: {
+        Row: any;
+        Insert: any;
+        Update: any;
+      };
+    };
+    Views: {
+      [key: string]: {
+        Row: any;
+      };
+    };
+    Functions: {
+      [key: string]: any;
+    };
+    Enums: {
+      [key: string]: string;
+    };
+  };
+}
+
+// 인증 관련 타입들
+export interface AuthUser {
+  id: string;
+  email: string;
+  email_confirmed_at?: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface AuthSession {
+  access_token: string;
+  refresh_token: string;
+  expires_in: number;
+  token_type: string;
+  user: AuthUser;
+}

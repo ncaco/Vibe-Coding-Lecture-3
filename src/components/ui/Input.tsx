@@ -1,83 +1,88 @@
-import React from 'react';
+'use client';
 
-interface InputProps {
-  type?: 'text' | 'email' | 'password' | 'number' | 'tel' | 'url';
-  placeholder?: string;
-  value?: string;
-  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void;
-  onFocus?: (e: React.FocusEvent<HTMLInputElement>) => void;
-  disabled?: boolean;
-  required?: boolean;
-  name?: string;
-  id?: string;
-  className?: string;
+import React, { forwardRef } from 'react';
+import { cn } from '@/lib/utils';
+
+export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   size?: 'sm' | 'md' | 'lg';
-  error?: string;
   icon?: React.ReactNode;
   iconPosition?: 'left' | 'right';
+  error?: string;
+  label?: string;
 }
 
-const Input: React.FC<InputProps> = ({
-  type = 'text',
-  placeholder,
-  value,
-  onChange,
-  onBlur,
-  onFocus,
-  disabled = false,
-  required = false,
-  name,
-  id,
-  className = '',
-  size = 'md',
-  error,
-  icon,
-  iconPosition = 'left'
-}) => {
-  const baseClasses = 'bg-background-secondary border border-border rounded-xl text-text placeholder-text-muted focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed';
-  
-  const sizeClasses = {
-    sm: 'px-3 py-2 text-sm',
-    md: 'px-4 py-3 text-base',
-    lg: 'px-6 py-4 text-lg'
-  };
-  
-  const errorClasses = error ? 'border-red-500 focus:ring-red-500' : '';
-  const iconClasses = icon ? (iconPosition === 'left' ? 'pl-10' : 'pr-10') : '';
-  
-  const classes = `${baseClasses} ${sizeClasses[size]} ${errorClasses} ${iconClasses} ${className}`;
-  
-  return (
-    <div className="relative">
-      {icon && iconPosition === 'left' && (
-        <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-text-muted">
-          {icon}
+const Input = forwardRef<HTMLInputElement, InputProps>(
+  ({ 
+    className, 
+    type = 'text', 
+    size = 'md', 
+    icon, 
+    iconPosition = 'left',
+    error,
+    label,
+    disabled,
+    ...props 
+  }, ref) => {
+    const sizeClasses = {
+      sm: 'h-8 px-3 text-sm',
+      md: 'h-10 px-4 text-sm',
+      lg: 'h-12 px-4 text-base',
+    };
+
+    const iconSizeClasses = {
+      sm: 'h-8',
+      md: 'h-10',
+      lg: 'h-12',
+    };
+
+    const baseClasses = cn(
+      "w-full border border-border rounded-lg",
+      "bg-background text-text placeholder:text-text-secondary",
+      "focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent",
+      "transition-colors duration-200",
+      sizeClasses[size],
+      disabled && "opacity-50 cursor-not-allowed",
+      error && "border-red-500 focus:ring-red-500",
+      icon && iconPosition === 'left' && 'pl-10',
+      icon && iconPosition === 'right' && 'pr-10',
+      className
+    );
+
+    return (
+      <div className="w-full">
+        {label && (
+          <label className="block text-sm font-medium text-text mb-2">
+            {label}
+          </label>
+        )}
+        <div className="relative">
+          {icon && (
+            <div
+              className={cn(
+                "absolute top-0 flex items-center justify-center w-10 text-text-secondary pointer-events-none",
+                iconSizeClasses[size],
+                iconPosition === 'left' ? 'left-0' : 'right-0'
+              )}
+            >
+              {icon}
+            </div>
+          )}
+          <input
+            type={type}
+            className={baseClasses}
+            ref={ref}
+            disabled={disabled}
+            {...props}
+          />
         </div>
-      )}
-      <input
-        type={type}
-        placeholder={placeholder}
-        value={value}
-        onChange={onChange}
-        onBlur={onBlur}
-        onFocus={onFocus}
-        disabled={disabled}
-        required={required}
-        name={name}
-        id={id}
-        className={classes}
-      />
-      {icon && iconPosition === 'right' && (
-        <div className="absolute right-3 top-1/2 transform -translate-y-1/2 text-text-muted">
-          {icon}
-        </div>
-      )}
-      {error && (
-        <p className="mt-1 text-sm text-red-500">{error}</p>
-      )}
-    </div>
-  );
-};
+        {error && (
+          <p className="mt-2 text-sm text-red-500">{error}</p>
+        )}
+      </div>
+    );
+  }
+);
+
+Input.displayName = 'Input';
 
 export default Input;
