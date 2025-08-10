@@ -17,6 +17,19 @@ const Header: React.FC = () => {
     return parts.slice(0, 2).toUpperCase();
   };
 
+  // 사용자 표시 이름 또는 이니셜 가져오기
+  const getUserDisplay = () => {
+    if (user?.name) {
+      // 이름에서 공백 제거하고 4글자까지만 표시
+      const cleanName = user.name.replace(/\s+/g, '');
+      return cleanName.slice(0, 4);
+    }
+    if (user?.email) {
+      return getUserInitials(user.email);
+    }
+    return 'U';
+  };
+
   const navigation = [
     { name: 'Product', href: '/features' },
     { name: 'Resources', href: '/about' },
@@ -96,7 +109,7 @@ const Header: React.FC = () => {
                   {/* 사용자 아바타 동그라미 */}
                   <div className="w-10 h-10 bg-accent rounded-full flex items-center justify-center">
                     <span className="text-white font-bold text-sm">
-                      {getUserInitials(user?.email || '')}
+                      {getUserDisplay()}
                     </span>
                   </div>
                   <Button 
@@ -166,11 +179,11 @@ const Header: React.FC = () => {
                       {/* 모바일에서도 사용자 아바타 동그라미 */}
                       <div className="w-10 h-10 bg-accent rounded-full flex items-center justify-center">
                         <span className="text-white font-bold text-sm">
-                          {getUserInitials(user?.email || '')}
+                          {getUserDisplay()}
                         </span>
                       </div>
                       <span className="text-sm text-text-secondary">
-                        {user?.email}
+                        {user?.name || user?.email}
                       </span>
                     </div>
                     <Button 

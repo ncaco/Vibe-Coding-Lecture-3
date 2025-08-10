@@ -2,12 +2,47 @@ import { createClient } from '@/utils/supabase/client'
 import type { AuthUser, AuthSession } from '@/types'
 
 // 회원가입
-export const signUp = async (email: string, password: string) => {
+export const signUp = async (email: string, password: string, firstName: string, lastName: string) => {
   const supabase = createClient()
+  
+  // 1. Supabase Auth로 계정 생성
   const { data, error } = await supabase.auth.signUp({
     email,
     password,
+    options: {
+      data: {
+        first_name: firstName,
+        last_name: lastName,
+        full_name: `${firstName} ${lastName}`.trim()
+      }
+    }
   })
+  
+  if (error) {
+    return { data, error }
+  }
+  
+  // 2. 사용자 프로필 테이블에 이름 정보 저장 (선택사항)
+  if (data.user) {
+    try {
+      const { error: profileError } = await supabase
+        .from('TB_MBR')
+        .insert({
+          ID: data.user.id,
+          FIRST_NAME: firstName,
+          LAST_NAME: lastName,
+          FULL_NAME: `${firstName} ${lastName}`.trim(),
+          EMAIL: email
+        })
+      
+      if (profileError) {
+        console.warn('프로필 저장 실패:', profileError)
+        // 프로필 저장 실패해도 회원가입은 성공으로 처리
+      }
+    } catch (profileError) {
+      console.warn('프로필 저장 중 오류:', profileError)
+    }
+  }
   
   return { data, error }
 }
@@ -76,6 +111,7 @@ export const onAuthStateChange = (callback: (event: string, session: AuthSession
         token_type: session.token_type,
         user: {
           id: session.user.id,
+          name: session.user.user_metadata?.full_name || session.user.user_metadata?.first_name || undefined,
           email: session.user.email,
           email_confirmed_at: session.user.email_confirmed_at || undefined,
           created_at: session.user.created_at,

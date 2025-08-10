@@ -109,6 +109,7 @@ export interface Database {
 // 인증 관련 타입들
 export interface AuthUser {
   id: string;
+  name?: string;
   email: string;
   email_confirmed_at?: string;
   created_at: string;

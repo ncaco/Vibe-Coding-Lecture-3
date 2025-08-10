@@ -91,8 +91,13 @@ export default function SignupPage() {
     setErrors({});
     
     try {
-      // Supabase 회원가입 실행
-      const { data, error } = await signUp(formData.email, formData.password);
+      // Supabase 회원가입 실행 - 이름 정보 포함
+      const { data, error } = await signUp(
+        formData.email, 
+        formData.password, 
+        formData.firstName, 
+        formData.lastName
+      );
       
       if (error) {
         if (error.message.includes('already registered')) {
@@ -214,23 +219,6 @@ export default function SignupPage() {
           {/* Name Fields */}
           <div className="grid grid-cols-2 gap-4">
             <FormField>
-              <FormLabel htmlFor="firstName" required>
-                이름
-              </FormLabel>
-              <Input
-                id="firstName"
-                name="firstName"
-                type="text"
-                autoComplete="given-name"
-                placeholder="홍"
-                value={formData.firstName}
-                onChange={handleInputChange}
-                error={errors.firstName}
-                required
-              />
-            </FormField>
-
-            <FormField>
               <FormLabel htmlFor="lastName" required>
                 성
               </FormLabel>
@@ -239,10 +227,27 @@ export default function SignupPage() {
                 name="lastName"
                 type="text"
                 autoComplete="family-name"
-                placeholder="길동"
+                placeholder="홍"
                 value={formData.lastName}
                 onChange={handleInputChange}
                 error={errors.lastName}
+                required
+              />
+            </FormField>
+
+            <FormField>
+              <FormLabel htmlFor="firstName" required>
+                이름
+              </FormLabel>
+              <Input
+                id="firstName"
+                name="firstName"
+                type="text"
+                autoComplete="given-name"
+                placeholder="길동"
+                value={formData.firstName}
+                onChange={handleInputChange}
+                error={errors.firstName}
                 required
               />
             </FormField>
