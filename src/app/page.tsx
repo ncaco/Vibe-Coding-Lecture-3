@@ -1,10 +1,6 @@
 import Link from 'next/link';
-import Button from '@/components/ui/Button';
-import Card from '@/components/ui/Card';
-import Badge from '@/components/ui/Badge';
-import Hero from '@/components/sections/Hero';
-import Carousel from '@/components/ui/Carousel';
-import ImageCard from '@/components/ui/ImageCard';
+import { Button, Card, Carousel, ImageCard } from '@/components/ui';
+import { Hero, WelcomeMessage } from '@/components/sections';
 
 export default function Home() {
   const features = [
@@ -46,6 +42,9 @@ export default function Home() {
         description="Meet the system for modern software development. Streamline your design process with purpose-built components and Linear-inspired aesthetics."
         badge="🚀 Hot Reload Test!"
       />
+
+      {/* Welcome Message for Logged In Users */}
+      <WelcomeMessage />
 
       {/* Stats Section */}
       <section className="py-16 bg-background-secondary">

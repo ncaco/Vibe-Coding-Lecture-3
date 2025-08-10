@@ -20,6 +20,19 @@ export const signIn = async (email: string, password: string) => {
     password,
   })
   
+  // 더 구체적인 오류 메시지 제공
+  if (error) {
+    let enhancedError = { ...error };
+    
+    if (error.message.includes('Invalid login credentials')) {
+      enhancedError.message = '이메일 또는 비밀번호가 올바르지 않습니다. 이메일을 확인했는지 확인해주세요.';
+    } else if (error.message.includes('Email not confirmed')) {
+      enhancedError.message = '이메일을 확인해주세요. 회원가입 후 이메일의 확인 링크를 클릭하여 계정을 활성화해주세요.';
+    }
+    
+    return { data, error: enhancedError };
+  }
+  
   return { data, error }
 }
 

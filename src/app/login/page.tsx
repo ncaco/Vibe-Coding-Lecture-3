@@ -1,16 +1,38 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { Button, Input, Form, FormField, FormLabel, FormError, Divider, SocialButton } from '@/components/ui';
+import { signIn } from '@/lib/auth';
+import { useAuth } from '@/hooks/useAuth';
 
 export default function LoginPage() {
+  const router = useRouter();
+  const { isAuthenticated } = useAuth();
   const [formData, setFormData] = useState({
     email: '',
     password: '',
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isLoading, setIsLoading] = useState(false);
+  const [successMessage, setSuccessMessage] = useState<string>('');
+
+  // URL 파라미터에서 메시지 확인
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const message = urlParams.get('message');
+    if (message === 'signup-success') {
+      setSuccessMessage('회원가입이 완료되었습니다! 이메일을 확인하여 계정을 활성화한 후 로그인해주세요.');
+    }
+  }, []);
+
+  // 이미 로그인된 사용자는 메인 페이지로 리다이렉트
+  useEffect(() => {
+    if (isAuthenticated) {
+      router.push('/');
+    }
+  }, [isAuthenticated, router]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -46,16 +68,26 @@ export default function LoginPage() {
     if (!validateForm()) return;
 
     setIsLoading(true);
+    setErrors({});
     
     try {
-      // TODO: Implement actual login logic
-      console.log('Login attempt:', formData);
+      const { data, error } = await signIn(formData.email, formData.password);
       
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // Redirect to dashboard or show success message
-      console.log('Login successful');
+      if (error) {
+        console.error('Login error:', error);
+        if (error.message.includes('Invalid login credentials')) {
+          setErrors({ general: '이메일 또는 비밀번호가 올바르지 않습니다.' });
+        } else {
+          setErrors({ general: error.message || '로그인에 실패했습니다. 다시 시도해주세요.' });
+        }
+        return;
+      }
+
+      if (data?.user) {
+        console.log('Login successful:', data.user);
+        // 로그인 성공 시 메인 페이지로 리다이렉트
+        router.push('/');
+      }
       
     } catch (error) {
       console.error('Login failed:', error);
@@ -69,6 +101,18 @@ export default function LoginPage() {
     console.log(`Social login with ${provider}`);
     // TODO: Implement social login
   };
+
+  // 이미 로그인된 사용자는 로딩 화면 표시
+  if (isAuthenticated) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-accent mx-auto"></div>
+          <p className="mt-4 text-text-secondary">로그인 중...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
@@ -115,6 +159,12 @@ export default function LoginPage() {
           {errors.general && (
             <div className="bg-error/10 border border-error/20 rounded-xl p-4">
               <p className="text-sm text-error text-center">{errors.general}</p>
+            </div>
+          )}
+
+          {successMessage && (
+            <div className="bg-success/10 border border-success/20 rounded-xl p-4">
+              <p className="text-sm text-success text-center">{successMessage}</p>
             </div>
           )}
 
@@ -167,6 +217,38 @@ export default function LoginPage() {
           >
             {isLoading ? '로그인 중...' : '로그인'}
           </Button>
+          
+          {/* 이메일 확인 안내 */}
+          <div className="text-center">
+            <p className="text-sm text-text-muted">
+              로그인이 안 되나요?{' '}
+              <Link 
+                href="/signup" 
+                className="text-accent hover:text-accent-hover font-medium transition-colors"
+              >
+                회원가입
+              </Link>
+              {' '}또는{' '}
+              <button
+                type="button"
+                onClick={() => {
+                  if (formData.email) {
+                    // 비밀번호 재설정 이메일 보내기
+                    // TODO: 비밀번호 재설정 기능 구현
+                    alert('비밀번호 재설정 기능은 준비 중입니다.');
+                  } else {
+                    setErrors({ email: '비밀번호 재설정을 위해 이메일을 입력해주세요.' });
+                  }
+                }}
+                className="text-accent hover:text-accent-hover font-medium transition-colors"
+              >
+                비밀번호 재설정
+              </button>
+            </p>
+            <p className="text-xs text-text-muted mt-2">
+              회원가입 후 이메일 확인이 필요합니다.
+            </p>
+          </div>
         </Form>
 
         {/* Footer */}

@@ -4,9 +4,18 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import Button from '../ui/Button';
 import { cn } from '@/lib/utils';
+import { useAuth } from '@/hooks/useAuth';
 
 const Header: React.FC = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { user, isAuthenticated, logout, loading } = useAuth();
+
+  // 사용자 이메일에서 첫 2글자 추출
+  const getUserInitials = (email: string) => {
+    if (!email) return 'U';
+    const parts = email.split('@')[0]; // @ 앞부분만 사용
+    return parts.slice(0, 2).toUpperCase();
+  };
 
   const navigation = [
     { name: 'Product', href: '/features' },
@@ -16,6 +25,34 @@ const Header: React.FC = () => {
     { name: 'Now', href: '/now' },
     { name: 'Contact', href: '/contact' },
   ];
+
+  const handleLogout = async () => {
+    const { error } = await logout();
+    if (error) {
+      console.error('로그아웃 실패:', error);
+    }
+  };
+
+  // 로딩 중일 때는 기본 헤더만 표시
+  if (loading) {
+    return (
+      <header className={cn(
+        "sticky top-0 z-40 transition-all duration-300 border-b",
+        "bg-background/95 backdrop-blur-md border-border shadow-lg"
+      )}>
+        <div className="container-custom">
+          <div className="flex items-center justify-between h-16">
+            <Link href="/" className="flex items-center space-x-2">
+              <div className="w-8 h-8 bg-accent rounded-lg flex items-center justify-center">
+                <span className="text-white font-bold text-lg">V</span>
+              </div>
+              <span className="text-xl font-bold text-text">Vibe</span>
+            </Link>
+          </div>
+        </div>
+      </header>
+    );
+  }
 
   return (
     <header className={cn(
@@ -52,16 +89,39 @@ const Header: React.FC = () => {
                 Components
               </Button>
             </Link>
-            <Link href="/login">
-              <Button variant="secondary" size="sm">
-                Log in
-              </Button>
-            </Link>
-            <Link href="/signup">
-              <Button size="sm">
-                Sign up
-              </Button>
-            </Link>
+            
+            {isAuthenticated ? (
+              <>
+                <div className="flex items-center space-x-3">
+                  {/* 사용자 아바타 동그라미 */}
+                  <div className="w-10 h-10 bg-accent rounded-full flex items-center justify-center">
+                    <span className="text-white font-bold text-sm">
+                      {getUserInitials(user?.email || '')}
+                    </span>
+                  </div>
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    onClick={handleLogout}
+                  >
+                    로그아웃
+                  </Button>
+                </div>
+              </>
+            ) : (
+              <>
+                <Link href="/login">
+                  <Button variant="secondary" size="sm">
+                    Log in
+                  </Button>
+                </Link>
+                <Link href="/signup">
+                  <Button size="sm">
+                    Sign up
+                  </Button>
+                </Link>
+              </>
+            )}
           </div>
 
           {/* Mobile menu button */}
@@ -99,16 +159,46 @@ const Header: React.FC = () => {
                     Components
                   </Button>
                 </Link>
-                <Link href="/login">
-                  <Button variant="secondary" size="sm" className="w-full justify-center">
-                    Log in
-                  </Button>
-                </Link>
-                <Link href="/signup">
-                  <Button size="sm" className="w-full justify-center">
-                    Sign up
-                  </Button>
-                </Link>
+                
+                {isAuthenticated ? (
+                  <>
+                    <div className="flex items-center space-x-3 px-3 py-2 border-b border-border">
+                      {/* 모바일에서도 사용자 아바타 동그라미 */}
+                      <div className="w-10 h-10 bg-accent rounded-full flex items-center justify-center">
+                        <span className="text-white font-bold text-sm">
+                          {getUserInitials(user?.email || '')}
+                        </span>
+                      </div>
+                      <span className="text-sm text-text-secondary">
+                        {user?.email}
+                      </span>
+                    </div>
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      className="w-full justify-center"
+                      onClick={() => {
+                        handleLogout();
+                        setIsMobileMenuOpen(false);
+                      }}
+                    >
+                      로그아웃
+                    </Button>
+                  </>
+                ) : (
+                  <>
+                    <Link href="/login">
+                      <Button variant="secondary" size="sm" className="w-full justify-center">
+                        Log in
+                      </Button>
+                    </Link>
+                    <Link href="/signup">
+                      <Button size="sm" className="w-full justify-center">
+                        Sign up
+                      </Button>
+                    </Link>
+                  </>
+                )}
               </div>
             </nav>
           </div>
