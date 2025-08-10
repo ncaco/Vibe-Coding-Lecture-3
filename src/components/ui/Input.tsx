@@ -4,7 +4,7 @@ import React, { forwardRef } from 'react';
 import { cn } from '@/lib/utils';
 
 export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
-  size?: 'sm' | 'md' | 'lg';
+  inputSize?: 'sm' | 'md' | 'lg';
   icon?: React.ReactNode;
   iconPosition?: 'left' | 'right';
   error?: string;
@@ -15,7 +15,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
   ({ 
     className, 
     type = 'text', 
-    size = 'md', 
+    inputSize = 'md', 
     icon, 
     iconPosition = 'left',
     error,
@@ -40,7 +40,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
       "bg-background text-text placeholder:text-text-secondary",
       "focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent",
       "transition-colors duration-200",
-      sizeClasses[size],
+      sizeClasses[inputSize],
       disabled && "opacity-50 cursor-not-allowed",
       error && "border-red-500 focus:ring-red-500",
       icon && iconPosition === 'left' && 'pl-10',
@@ -60,7 +60,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
             <div
               className={cn(
                 "absolute top-0 flex items-center justify-center w-10 text-text-secondary pointer-events-none",
-                iconSizeClasses[size],
+                iconSizeClasses[inputSize],
                 iconPosition === 'left' ? 'left-0' : 'right-0'
               )}
             >

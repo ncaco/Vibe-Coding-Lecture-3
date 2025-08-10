@@ -54,5 +54,24 @@ export const resetPassword = async (email: string) => {
 // 인증 상태 변화 리스너
 export const onAuthStateChange = (callback: (event: string, session: AuthSession | null) => void) => {
   const supabase = createClient()
-  return supabase.auth.onAuthStateChange(callback)
+  return supabase.auth.onAuthStateChange((event, session) => {
+    if (session && session.user.email && session.user.id && session.user.created_at && session.user.updated_at) {
+      const authSession: AuthSession = {
+        access_token: session.access_token,
+        refresh_token: session.refresh_token,
+        expires_in: session.expires_in,
+        token_type: session.token_type,
+        user: {
+          id: session.user.id,
+          email: session.user.email,
+          email_confirmed_at: session.user.email_confirmed_at || undefined,
+          created_at: session.user.created_at,
+          updated_at: session.user.updated_at
+        }
+      }
+      callback(event, authSession)
+    } else {
+      callback(event, null)
+    }
+  })
 }

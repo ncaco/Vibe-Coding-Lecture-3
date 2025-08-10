@@ -198,7 +198,7 @@ export default function ComponentsPage() {
               <h3 className="text-lg font-semibold text-text mb-4">Small Size</h3>
               <Input 
                 placeholder="Small input"
-                size="sm"
+                inputSize="sm"
               />
             </Card>
             
@@ -206,7 +206,7 @@ export default function ComponentsPage() {
               <h3 className="text-lg font-semibold text-text mb-4">Large Size</h3>
               <Input 
                 placeholder="Large input"
-                size="lg"
+                inputSize="lg"
               />
             </Card>
           </div>

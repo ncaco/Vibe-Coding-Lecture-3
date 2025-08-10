@@ -15,6 +15,7 @@ export interface ImageCardProps {
   badge?: string;
   badgeVariant?: 'default' | 'primary' | 'secondary' | 'success' | 'warning' | 'error';
   onClick?: () => void;
+  href?: string;
   className?: string;
 }
 
@@ -25,19 +26,23 @@ export default function ImageCard({
   badge,
   badgeVariant = 'default',
   onClick,
+  href,
   className,
 }: ImageCardProps) {
-  const CardWrapper = onClick ? 'button' : 'div';
+  const CardWrapper = onClick ? 'button' : href ? 'a' : 'div';
 
   return (
     <CardWrapper
       className={cn(
         "group relative bg-background-secondary border border-border rounded-2xl overflow-hidden",
         "transition-all duration-300 hover:border-accent/50 hover:shadow-lg hover:shadow-accent/10",
-        onClick && "cursor-pointer focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2",
+        (onClick || href) && "cursor-pointer focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2",
         className
       )}
       onClick={onClick}
+      href={href}
+      target={href ? "_blank" : undefined}
+      rel={href ? "noopener noreferrer" : undefined}
     >
       {/* Image container */}
       <div className="relative aspect-[4/3] overflow-hidden">
@@ -75,7 +80,7 @@ export default function ImageCard({
       </div>
 
       {/* Click indicator */}
-      {onClick && (
+      {(onClick || href) && (
         <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
           <div className="bg-background/80 backdrop-blur-sm border border-border rounded-full w-8 h-8 flex items-center justify-center">
             <svg
