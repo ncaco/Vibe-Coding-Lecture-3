@@ -2,9 +2,12 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { Button, Input, Form, FormField, FormLabel, FormError, FormDescription, Divider, SocialButton, Checkbox } from '@/components/ui';
+import { signUp } from '@/lib/auth';
 
 export default function SignupPage() {
+  const router = useRouter();
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -16,6 +19,7 @@ export default function SignupPage() {
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isLoading, setIsLoading] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
@@ -75,16 +79,31 @@ export default function SignupPage() {
     if (!validateForm()) return;
 
     setIsLoading(true);
+    setErrors({});
     
     try {
-      // TODO: Implement actual signup logic
-      console.log('Signup attempt:', formData);
+      // Supabase 회원가입 실행
+      const { data, error } = await signUp(formData.email, formData.password);
       
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      if (error) {
+        if (error.message.includes('already registered')) {
+          setErrors({ email: '이미 등록된 이메일입니다.' });
+        } else if (error.message.includes('password')) {
+          setErrors({ password: '비밀번호가 너무 약합니다.' });
+        } else {
+          setErrors({ general: '회원가입에 실패했습니다. 다시 시도해주세요.' });
+        }
+        return;
+      }
       
-      // Redirect to login or show success message
-      console.log('Signup successful');
+      // 회원가입 성공
+      setIsSuccess(true);
+      console.log('Signup successful:', data);
+      
+      // 3초 후 로그인 페이지로 리다이렉트
+      setTimeout(() => {
+        router.push('/login?message=signup-success');
+      }, 3000);
       
     } catch (error) {
       console.error('Signup failed:', error);

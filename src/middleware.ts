@@ -40,6 +40,7 @@ export async function middleware(request: NextRequest) {
     '/',
     '/components',
     '/login',
+    '/signup',
     '/auth'
   ]
 
