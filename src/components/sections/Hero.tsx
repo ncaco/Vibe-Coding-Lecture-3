@@ -56,7 +56,7 @@ const Hero: React.FC<HeroProps> = ({
           </Badge>
 
           {/* Title */}
-          <h1 className="text-5xl md:text-6xl font-bold text-text mb-6 leading-tight animate-fade-in-up animate-delay-100">
+          <h1 className="text-3xl md:text-4xl font-bold text-text mb-6 leading-tight animate-fade-in-up animate-delay-100">
             {title.split(' ').map((word, index) => (
               <span key={index}>
                 {word}
@@ -68,25 +68,25 @@ const Hero: React.FC<HeroProps> = ({
 
           {/* Subtitle */}
           {subtitle && (
-            <h2 className="text-xl md:text-2xl text-text-secondary mb-4 animate-fade-in-up animate-delay-200">
+            <h2 className="text-lg md:text-xl text-text-secondary mb-4 animate-fade-in-up animate-delay-200">
               {subtitle}
             </h2>
           )}
 
           {/* Description */}
-          <p className="text-xl text-text-secondary mb-8 max-w-2xl mx-auto animate-fade-in-up animate-delay-300">
+          <p className="text-base md:text-lg text-text-secondary mb-8 max-w-2xl mx-auto animate-fade-in-up animate-delay-300">
             {description}
           </p>
 
           {/* Actions */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in-up animate-delay-400">
             <Link href={primaryAction.href}>
-              <Button size="lg" className="hover-lift">
+              <Button size="sm" className="hover-lift">
                 {primaryAction.label}
               </Button>
             </Link>
             <Link href={secondaryAction.href}>
-              <Button variant="secondary" size="lg" className="hover-lift">
+              <Button variant="secondary" size="sm" className="hover-lift">
                 {secondaryAction.label}
               </Button>
             </Link>

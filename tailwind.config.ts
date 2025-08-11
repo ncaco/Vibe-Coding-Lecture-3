@@ -21,8 +21,8 @@ const config: Config = {
           muted: 'rgb(150, 151, 152)',
         },
         accent: {
-          DEFAULT: 'rgb(59, 130, 246)',
-          hover: 'rgb(37, 99, 235)',
+          DEFAULT: 'rgb(20, 184, 166)', // teal-500
+          hover: 'rgb(15, 118, 110)',   // teal-700
         },
         border: {
           DEFAULT: 'rgb(38, 39, 40)',
