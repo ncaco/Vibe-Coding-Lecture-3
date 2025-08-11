@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Button, Input, Form, FormField, FormLabel, FormError, Divider, SocialButton } from '@/components/ui';
+import { Button, Input, Form, FormField, FormLabel, FormError, Divider, SocialButton, Checkbox } from '@/components/ui';
 import { signIn } from '@/lib/auth';
 import { useAuth } from '@/hooks/useAuth';
 
@@ -13,6 +13,7 @@ export default function LoginPage() {
   const [formData, setFormData] = useState({
     email: '',
     password: '',
+    rememberEmail: false,
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isLoading, setIsLoading] = useState(false);
@@ -35,8 +36,11 @@ export default function LoginPage() {
   }, [isAuthenticated, router]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    const { name, value, type, checked } = e.target;
+    setFormData(prev => ({ 
+      ...prev, 
+      [name]: type === 'checkbox' ? checked : value 
+    }));
     // Clear error when user starts typing
     if (errors[name]) {
       setErrors(prev => ({ ...prev, [name]: '' }));
@@ -127,17 +131,8 @@ export default function LoginPage() {
           </Link>
           
           <h1 className="text-3xl font-bold text-text">
-            계정에 로그인
+            로그인
           </h1>
-          <p className="mt-2 text-text-secondary">
-            계정이 없으신가요?{' '}
-            <Link 
-              href="/signup" 
-              className="text-accent hover:text-accent-hover font-medium transition-colors"
-            >
-              회원가입하기
-            </Link>
-          </p>
         </div>
 
         {/* Social Login */}
@@ -186,17 +181,9 @@ export default function LoginPage() {
           </FormField>
 
           <FormField>
-            <div className="flex items-center justify-between">
-              <FormLabel htmlFor="password" required>
-                비밀번호
-              </FormLabel>
-              <Link 
-                href="/forgot-password" 
-                className="text-sm text-accent hover:text-accent-hover font-medium"
-              >
-                비밀번호를 잊으셨나요?
-              </Link>
-            </div>
+            <FormLabel htmlFor="password" required>
+              비밀번호
+            </FormLabel>
             <Input
               id="password"
               name="password"
@@ -210,6 +197,22 @@ export default function LoginPage() {
             />
           </FormField>
 
+          {/* 아이디 기억하기 체크박스 */}
+          <div className="flex items-center">
+            <Checkbox
+              id="rememberEmail"
+              name="rememberEmail"
+              checked={formData.rememberEmail}
+              onChange={handleInputChange}
+            />
+            <label 
+              htmlFor="rememberEmail" 
+              className="ml-2 text-sm text-text-secondary cursor-pointer"
+            >
+              아이디 기억하기
+            </label>
+          </div>
+
           <Button
             type="submit"
             className="w-full"
@@ -217,6 +220,15 @@ export default function LoginPage() {
           >
             {isLoading ? '로그인 중...' : '로그인'}
           </Button>
+
+          <div className="text-center">
+            <Link 
+              href="/forgot-password" 
+              className="text-sm text-accent hover:text-accent-hover font-medium"
+            >
+              비밀번호를 잊으셨나요?
+            </Link>
+          </div>
           
           {/* 이메일 확인 안내 */}
           <div className="text-center">
@@ -254,12 +266,11 @@ export default function LoginPage() {
         {/* Footer */}
         <div className="text-center">
           <p className="text-sm text-text-secondary">
-            계정이 없으신가요?{' '}
             <Link 
               href="/signup" 
               className="text-accent hover:text-accent-hover font-medium transition-colors"
             >
-              무료로 회원가입하기
+              계정이 없으신가요? 회원가입하기
             </Link>
           </p>
         </div>

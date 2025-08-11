@@ -13,7 +13,7 @@ export const signUp = async (email: string, password: string, firstName: string,
       data: {
         first_name: firstName,
         last_name: lastName,
-        full_name: `${firstName} ${lastName}`.trim()
+        full_name: `${lastName}${firstName}`.trim()
       }
     }
   })
@@ -31,7 +31,7 @@ export const signUp = async (email: string, password: string, firstName: string,
           ID: data.user.id,
           FIRST_NAME: firstName,
           LAST_NAME: lastName,
-          FULL_NAME: `${firstName} ${lastName}`.trim(),
+          FULL_NAME: `${lastName}${firstName}`.trim(),
           EMAIL: email
         })
       
@@ -111,7 +111,7 @@ export const onAuthStateChange = (callback: (event: string, session: AuthSession
         token_type: session.token_type,
         user: {
           id: session.user.id,
-          name: session.user.user_metadata?.full_name || session.user.user_metadata?.first_name || undefined,
+          name: session.user.user_metadata?.full_name || session.user.user_metadata?.last_name || undefined,
           email: session.user.email,
           email_confirmed_at: session.user.email_confirmed_at || undefined,
           created_at: session.user.created_at,
