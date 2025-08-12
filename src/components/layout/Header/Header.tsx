@@ -2,10 +2,10 @@
 
 import { useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
-import { HeaderLogo } from './HeaderLogo';
-import { HeaderNavigation } from './HeaderNavigation';
-import { HeaderActions } from './HeaderActions';
-import { HeaderMobileMenu } from './HeaderMobileMenu';
+import { HeaderLogo } from '@/components/layout/Header/HeaderLogo';
+import { HeaderNavigation } from '@/components/layout/Header/HeaderNavigation';
+import { HeaderActions } from '@/components/layout/Header/HeaderActions';
+import { HeaderMobileMenu } from '@/components/layout/Header/HeaderMobileMenu';
 import { cn } from '@/lib/utils';
 
 const Header: React.FC = () => {
@@ -26,7 +26,7 @@ const Header: React.FC = () => {
         "sticky top-0 z-40 transition-all duration-300 border-b",
         "bg-background/95 backdrop-blur-md border-border shadow-lg"
       )}>
-        <div className="container-custom">
+        <div className="container-custom px-4">
           <div className="flex items-center justify-between h-16">
             <HeaderLogo />
           </div>
@@ -40,7 +40,7 @@ const Header: React.FC = () => {
       "sticky top-0 z-40 transition-all duration-300 border-b",
       "bg-background/95 backdrop-blur-md border-border shadow-lg"
     )}>
-      <div className="container-custom">
+      <div className="container-custom px-4">
         <div className="flex items-center h-16">
           {/* Logo */}
           <HeaderLogo className="mr-8" />

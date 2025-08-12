@@ -1,12 +1,12 @@
 import Link from 'next/link';
 import Button from '../../ui/Button';
-import { User } from '@/types';
+import { AuthUser } from '@/types';
 import { navigation, NavigationItem, NavigationSubItem } from '@/components/layout/Header/navigationData';
 
 interface HeaderMobileMenuProps {
   isOpen: boolean;
   onClose: () => void;
-  user: User | null;
+  user: AuthUser | null;
   isAuthenticated: boolean;
   onLogout: () => void;
 }

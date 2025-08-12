@@ -1,9 +1,9 @@
 import Link from 'next/link';
 import Button from '../../ui/Button';
-import { User } from '@/types';
+import { AuthUser } from '@/types';
 
 interface HeaderActionsProps {
-  user: User | null;
+  user: AuthUser | null;
   isAuthenticated: boolean;
   onLogout: () => void;
   onMobileMenuToggle: () => void;
@@ -62,9 +62,9 @@ export const HeaderActions: React.FC<HeaderActionsProps> = ({
         )}
       </div>
 
-      {/* Mobile menu button - 우측 배치 */}
+      {/* Mobile menu button - 오른쪽 끝 배치 */}
       <button
-        className="md:hidden p-2 text-text-secondary hover:text-text hover:bg-background-secondary rounded-lg transition-colors ml-3"
+        className="md:hidden p-2 text-text-secondary hover:text-text hover:bg-background-secondary rounded-lg transition-colors ml-auto"
         onClick={onMobileMenuToggle}
       >
         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
