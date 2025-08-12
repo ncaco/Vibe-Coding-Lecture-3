@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import Button from '../../ui/Button';
 import { AuthUser } from '@/types';
-import { navigation, NavigationItem, NavigationSubItem } from '@/components/layout/Header/navigationData';
+import { mobileSidebarMenu, getUserMenu } from '@/data/menu';
 
 interface HeaderMobileMenuProps {
   isOpen: boolean;
@@ -42,47 +42,45 @@ export const HeaderMobileMenu: React.FC<HeaderMobileMenuProps> = ({
 
   return (
     <div className="md:hidden py-4 border-t border-border">
-      <nav className="flex flex-col space-y-3">
-        {navigation.map((item: NavigationItem) => (
-          <div key={item.name}>
-            <Link
-              href={item.href}
-              className="text-sm font-medium text-text-secondary hover:text-text transition-colors duration-200 block py-2"
-              onClick={onClose}
-            >
-              {item.name}
-            </Link>
-
-            {/* 모바일 2차 메뉴 */}
-            {item.submenu && (
-              <div className="ml-4 mt-2 space-y-2">
-                {item.submenu.map((subItem: NavigationSubItem) => (
-                  <Link
-                    key={subItem.name}
-                    href={subItem.href}
-                    className="flex items-center space-x-3 px-3 py-2 hover:bg-background-secondary transition-colors duration-150"
-                    onClick={onClose}
-                  >
-                    <subItem.icon className="w-4 h-4 text-text-muted" />
-                    <span className="text-sm text-text-secondary">
-                      {subItem.name}
+      <nav className="flex flex-col space-y-6">
+        {/* 메뉴 섹션들 */}
+        {mobileSidebarMenu.map((section) => (
+          <div key={section.id}>
+            <h3 className="text-xs font-semibold text-text-muted uppercase tracking-wider mb-3 px-4">
+              {section.title}
+            </h3>
+            <div className="space-y-1">
+              {section.items.map((item) => (
+                <Link
+                  key={item.id}
+                  href={item.href}
+                  className="flex items-center space-x-3 px-4 py-2 hover:bg-background-secondary transition-colors duration-150"
+                  onClick={onClose}
+                >
+                  <item.icon className="w-4 h-4 text-text-muted" />
+                  <span className="text-sm text-text-secondary flex-1">
+                    {item.name}
+                  </span>
+                  {item.badge && (
+                    <span className="text-xs bg-accent text-white px-2 py-1 rounded-full">
+                      {item.badge}
                     </span>
-                  </Link>
-                ))}
-              </div>
-            )}
+                  )}
+                </Link>
+              ))}
+            </div>
           </div>
         ))}
-        <div className="pt-4 space-y-2">
-          <Link href="/components">
-            <Button variant="ghost" size="sm" className="w-full justify-center">
-              Components
-            </Button>
-          </Link>
 
+        {/* 사용자 메뉴 */}
+        <div className="pt-4 border-t border-border">
+          <h3 className="text-xs font-semibold text-text-muted uppercase tracking-wider mb-3 px-4">
+            사용자
+          </h3>
+          
           {isAuthenticated ? (
             <>
-              <div className="flex items-center space-x-3 px-3 py-2 border-b border-border">
+              <div className="flex items-center space-x-3 px-4 py-2 border-b border-border mb-3">
                 {/* 모바일에서도 사용자 아바타 동그라미 */}
                 <div className="w-10 h-10 bg-accent rounded-full flex items-center justify-center">
                   <span className="text-white font-bold text-sm">
@@ -93,31 +91,38 @@ export const HeaderMobileMenu: React.FC<HeaderMobileMenuProps> = ({
                   {user?.name || user?.email}
                 </span>
               </div>
-              <Button
-                variant="outline"
-                size="sm"
-                className="w-full justify-center"
-                onClick={() => {
-                  onLogout();
-                  onClose();
-                }}
-              >
-                로그아웃
-              </Button>
+              
+              <div className="space-y-1">
+                {getUserMenu(true).map((item) => (
+                  <Link
+                    key={item.id}
+                    href={item.href}
+                    className="flex items-center space-x-3 px-4 py-2 hover:bg-background-secondary transition-colors duration-150"
+                    onClick={item.id === 'logout' ? () => { onLogout(); onClose(); } : onClose}
+                  >
+                    <item.icon className="w-4 h-4 text-text-muted" />
+                    <span className="text-sm text-text-secondary">
+                      {item.name}
+                    </span>
+                  </Link>
+                ))}
+              </div>
             </>
           ) : (
-            <>
-              <Link href="/login">
-                <Button variant="secondary" size="sm" className="w-full justify-center">
-                  Log in
-                </Button>
-              </Link>
-              <Link href="/signup">
-                <Button size="sm" className="w-full justify-center">
-                  Sign up
-                </Button>
-              </Link>
-            </>
+            <div className="space-y-2 px-4">
+              {getUserMenu(false).map((item) => (
+                <Link key={item.id} href={item.href}>
+                  <Button 
+                    variant={item.id === 'signup' ? 'primary' : 'secondary'} 
+                    size="sm" 
+                    className="w-full justify-center"
+                    onClick={onClose}
+                  >
+                    {item.name}
+                  </Button>
+                </Link>
+              ))}
+            </div>
           )}
         </div>
       </nav>

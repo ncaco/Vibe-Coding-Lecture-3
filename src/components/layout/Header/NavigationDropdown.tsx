@@ -11,10 +11,10 @@ import {
   HeartIcon,
   StarIcon
 } from '@heroicons/react/24/outline';
-import { NavigationItem, NavigationSubItem } from '@/components/layout/Header/navigationData';
+import { MenuItem } from '@/data/menu';
 
 interface NavigationDropdownProps {
-  item: NavigationItem;
+  item: MenuItem;
 }
 
 export const NavigationDropdown: React.FC<NavigationDropdownProps> = ({ item }) => {
@@ -25,12 +25,7 @@ export const NavigationDropdown: React.FC<NavigationDropdownProps> = ({ item }) 
         <div className="border-b border-border pb-6 mb-6">
           <h3 className="text-2xl font-bold text-text mb-2">{item.name}</h3>
           <p className="text-text-muted text-sm">
-            {item.name === 'Product' && '혁신적인 개발 도구로 프로젝트를 가속화하고 품질을 향상시키세요'}
-            {item.name === 'Portal' && '개발자 포털에서 필요한 모든 리소스와 도구를 한 곳에서 찾아보세요'}
-            {item.name === 'Resources' && '개발에 필요한 가이드, 문서, 예제를 체계적으로 제공합니다'}
-            {item.name === 'Customers' && 'Vibe를 사용하는 고객들의 실제 성공 사례와 경험을 확인하세요'}
-            {item.name === 'Components' && '재사용 가능한 UI 컴포넌트로 일관되고 아름다운 디자인을 구현하세요'}
-            {item.name === 'Contact' && '문의사항이나 제안사항이 있으시면 언제든 연락주세요'}
+            {item.description}
           </p>
         </div>
 
@@ -43,9 +38,9 @@ export const NavigationDropdown: React.FC<NavigationDropdownProps> = ({ item }) 
               핵심 기능
             </h4>
             <div className="space-y-3">
-              {item.submenu?.map((subItem: NavigationSubItem) => (
+              {item.children?.map((subItem) => (
                 <Link
-                  key={subItem.name}
+                  key={subItem.id}
                   href={subItem.href}
                   className="group flex items-start space-x-3 p-3 rounded-xl hover:bg-background-secondary transition-all duration-200"
                 >
@@ -57,19 +52,7 @@ export const NavigationDropdown: React.FC<NavigationDropdownProps> = ({ item }) 
                       {subItem.name}
                     </div>
                     <div className="text-xs text-text-muted mt-1 leading-relaxed">
-                      {subItem.name === 'Features' && '최신 기술을 활용한 강력한 기능으로 개발 효율성을 극대화하세요'}
-                      {subItem.name === 'Integrations' && '다양한 서비스와의 원활한 연동으로 워크플로우를 최적화하세요'}
-                      {subItem.name === 'API' && 'RESTful API 및 GraphQL을 통해 빠르고 안정적인 개발을 경험하세요'}
-                      {subItem.name === 'Dashboard' && '직관적인 대시보드로 프로젝트 현황을 한눈에 파악하고 관리하세요'}
-                      {subItem.name === 'Templates' && '검증된 템플릿으로 개발 시간을 단축하고 일관된 품질을 보장하세요'}
-                      {subItem.name === 'Documentation' && '체계적이고 상세한 문서로 모든 기능을 효과적으로 활용하세요'}
-                      {subItem.name === 'About' && 'Vibe의 비전과 미션, 그리고 우리가 추구하는 가치를 확인하세요'}
-                      {subItem.name === 'Blog' && '최신 기술 트렌드와 개발 인사이트를 담은 전문적인 콘텐츠를 만나보세요'}
-                      {subItem.name === 'Support' && '전문적인 고객 지원팀이 언제든 도움을 드립니다'}
-                      {subItem.name === 'Case Studies' && '실제 프로젝트에서의 성공 사례와 구체적인 활용 방법을 학습하세요'}
-                      {subItem.name === 'Testimonials' && '고객들의 생생한 후기와 평가로 Vibe의 가치를 확인하세요'}
-                      {subItem.name === 'Components' && '재사용 가능한 UI 컴포넌트로 일관되고 아름다운 사용자 경험을 구현하세요'}
-                      {subItem.name === 'Contact' && '문의 및 연락처로 필요한 정보를 빠르게 얻으세요'}
+                      {subItem.description}
                     </div>
                   </div>
                 </Link>
