@@ -65,7 +65,7 @@ export const NavigationDropdown: React.FC<NavigationDropdownProps> = ({ item }) 
     <div 
       ref={dropdownRef}
       style={{ width: dropdownWidth }}
-      className={`absolute top-full mt-3 bg-background border border-border rounded-2xl shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50 ${
+      className={`absolute top-full mt-5 bg-background border border-border rounded-2xl shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50 ${
         dropdownPosition === 'right' ? 'right-0' : 'left-0'
       }`}
     >
