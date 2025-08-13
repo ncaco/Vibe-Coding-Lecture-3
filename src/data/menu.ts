@@ -171,34 +171,3 @@ export const quickLinks: MenuItem[] = [
   { id: 'community', name: '커뮤니티', href: '/community', icon: UserGroupIcon },
   { id: 'support', name: '지원', href: '/support', icon: QuestionMarkCircleIcon }
 ];
-
-// 푸터 메뉴
-export const footerMenu: MenuSection[] = [
-  {
-    id: 'product',
-    title: '제품',
-    items: [
-      { id: 'features', name: '기능', href: '/features', icon: CogIcon },
-      { id: 'pricing', name: '가격', href: '/pricing', icon: CurrencyDollarIcon },
-      { id: 'integrations', name: '연동', href: '/integrations', icon: WrenchScrewdriverIcon }
-    ]
-  },
-  {
-    id: 'company',
-    title: '회사',
-    items: [
-      { id: 'about', name: '소개', href: '/about', icon: InformationCircleIcon },
-      { id: 'blog', name: '블로그', href: '/blog', icon: DocumentTextIcon },
-      { id: 'careers', name: '채용', href: '/careers', icon: UserGroupIcon }
-    ]
-  },
-  {
-    id: 'support',
-    title: '지원',
-    items: [
-      { id: 'help', name: '도움말', href: '/help', icon: QuestionMarkCircleIcon },
-      { id: 'contact', name: '연락처', href: '/contact', icon: EnvelopeIcon },
-      { id: 'status', name: '상태', href: '/status', icon: ChartBarIcon }
-    ]
-  }
-];
