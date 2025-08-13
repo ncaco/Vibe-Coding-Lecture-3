@@ -6,27 +6,28 @@ const config: Config = {
     './src/components/**/*.{js,ts,jsx,tsx,mdx}',
     './src/app/**/*.{js,ts,jsx,tsx,mdx}',
   ],
+  darkMode: 'class',
   theme: {
     extend: {
       colors: {
-        // Linear-inspired color palette
+        // CSS 변수를 사용하는 색상
         background: {
-          DEFAULT: 'rgb(8, 9, 10)',
-          secondary: 'rgb(15, 16, 17)',
-          tertiary: 'rgb(22, 23, 24)',
+          DEFAULT: 'rgb(var(--background) / <alpha-value>)',
+          secondary: 'rgb(var(--background-secondary) / <alpha-value>)',
+          tertiary: 'rgb(var(--background-tertiary) / <alpha-value>)',
         },
         text: {
-          DEFAULT: 'rgb(247, 248, 248)',
-          secondary: 'rgb(200, 201, 202)',
-          muted: 'rgb(150, 151, 152)',
+          DEFAULT: 'rgb(var(--text) / <alpha-value>)',
+          secondary: 'rgb(var(--text-secondary) / <alpha-value>)',
+          muted: 'rgb(var(--text-muted) / <alpha-value>)',
         },
         accent: {
-          DEFAULT: 'rgb(20, 184, 166)', // teal-500
-          hover: 'rgb(15, 118, 110)',   // teal-700
+          DEFAULT: 'rgb(var(--accent) / <alpha-value>)',
+          hover: 'rgb(var(--accent-hover) / <alpha-value>)',
         },
         border: {
-          DEFAULT: 'rgb(38, 39, 40)',
-          hover: 'rgb(58, 59, 60)',
+          DEFAULT: 'rgb(var(--border) / <alpha-value>)',
+          hover: 'rgb(var(--border-hover) / <alpha-value>)',
         }
       },
       fontFamily: {

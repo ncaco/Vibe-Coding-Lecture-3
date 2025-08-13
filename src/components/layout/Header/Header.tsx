@@ -64,7 +64,6 @@ const Header: React.FC = () => {
           onClose={() => setIsMobileMenuOpen(false)}
           user={user}
           isAuthenticated={isAuthenticated}
-          onLogout={handleLogout}
         />
       </div>
     </header>

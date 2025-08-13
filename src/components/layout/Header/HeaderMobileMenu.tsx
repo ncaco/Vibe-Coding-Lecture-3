@@ -1,130 +1,99 @@
+"use client";
+
 import Link from 'next/link';
-import Button from '../../ui/Button';
+import { useState } from 'react';
+import { ChevronDownIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
 import { AuthUser } from '@/types';
-import { mobileSidebarMenu, getUserMenu } from '@/data/menu';
+import { mainNavigation } from '@/data/menu';
 
 interface HeaderMobileMenuProps {
   isOpen: boolean;
   onClose: () => void;
   user: AuthUser | null;
   isAuthenticated: boolean;
-  onLogout: () => void;
 }
 
 export const HeaderMobileMenu: React.FC<HeaderMobileMenuProps> = ({
   isOpen,
   onClose,
   user,
-  isAuthenticated,
-  onLogout
+  isAuthenticated
 }) => {
-  // 사용자 이메일에서 첫 2글자 추출
-  const getUserInitials = (email: string) => {
-    if (!email) return 'U';
-    const parts = email.split('@')[0]; // @ 앞부분만 사용
-    return parts.slice(0, 2).toUpperCase();
-  };
+  const [expandedMenus, setExpandedMenus] = useState<Set<string>>(new Set());
 
-  // 사용자 표시 이름 또는 이니셜 가져오기
-  const getUserDisplay = () => {
-    if (user?.name) {
-      // 이름에서 공백 제거하고 4글자까지만 표시
-      const cleanName = user.name.replace(/\s+/g, '');
-      return cleanName.slice(0, 4);
+  // 메뉴 토글 함수
+  const toggleMenu = (menuId: string) => {
+    const newExpandedMenus = new Set(expandedMenus);
+    if (newExpandedMenus.has(menuId)) {
+      newExpandedMenus.delete(menuId);
+    } else {
+      newExpandedMenus.add(menuId);
     }
-    if (user?.email) {
-      return getUserInitials(user.email);
-    }
-    return 'U';
+    setExpandedMenus(newExpandedMenus);
   };
 
   if (!isOpen) return null;
 
   return (
     <div className="md:hidden py-4 border-t border-border">
-      <nav className="flex flex-col space-y-6">
-        {/* 메뉴 섹션들 */}
-        {mobileSidebarMenu.map((section) => (
-          <div key={section.id}>
-            <h3 className="text-xs font-semibold text-text-muted uppercase tracking-wider mb-3 px-4">
-              {section.title}
-            </h3>
-            <div className="space-y-1">
-              {section.items.map((item) => (
-                <Link
-                  key={item.id}
-                  href={item.href}
-                  className="flex items-center space-x-3 px-4 py-2 hover:bg-background-secondary transition-colors duration-150"
-                  onClick={onClose}
+      <nav className="flex flex-col space-y-2">
+        {/* 메인 네비게이션 메뉴 */}
+        {mainNavigation.map((item) => (
+          <div key={item.id} className="border-b border-border/20">
+            {item.children ? (
+              // 2차 뎁스가 있는 메뉴
+              <div>
+                <button
+                  onClick={() => toggleMenu(item.id)}
+                  className="flex items-center justify-between w-full px-4 py-3 hover:bg-background-secondary transition-colors duration-150"
                 >
-                  <item.icon className="w-4 h-4 text-text-muted" />
-                  <span className="text-sm text-text-secondary flex-1">
-                    {item.name}
-                  </span>
-                  {item.badge && (
-                    <span className="text-xs bg-accent text-white px-2 py-1 rounded-full">
-                      {item.badge}
-                    </span>
-                  )}
-                </Link>
-              ))}
-            </div>
-          </div>
-        ))}
-
-        {/* 사용자 메뉴 */}
-        <div className="pt-4 border-t border-border">
-          <h3 className="text-xs font-semibold text-text-muted uppercase tracking-wider mb-3 px-4">
-            사용자
-          </h3>
-          
-          {isAuthenticated ? (
-            <>
-              <div className="flex items-center space-x-3 px-4 py-2 border-b border-border mb-3">
-                {/* 모바일에서도 사용자 아바타 동그라미 */}
-                <div className="w-10 h-10 bg-accent rounded-full flex items-center justify-center">
-                  <span className="text-white font-bold text-sm">
-                    {getUserDisplay()}
-                  </span>
-                </div>
-                <span className="text-sm text-text-secondary">
-                  {user?.name || user?.email}
-                </span>
-              </div>
-              
-              <div className="space-y-1">
-                {getUserMenu(true).map((item) => (
-                  <Link
-                    key={item.id}
-                    href={item.href}
-                    className="flex items-center space-x-3 px-4 py-2 hover:bg-background-secondary transition-colors duration-150"
-                    onClick={item.id === 'logout' ? () => { onLogout(); onClose(); } : onClose}
-                  >
+                  <div className="flex items-center space-x-3">
                     <item.icon className="w-4 h-4 text-text-muted" />
-                    <span className="text-sm text-text-secondary">
+                    <span className="text-sm font-medium text-text-secondary">
                       {item.name}
                     </span>
-                  </Link>
-                ))}
+                  </div>
+                  {expandedMenus.has(item.id) ? (
+                    <ChevronDownIcon className="w-4 h-4 text-text-muted" />
+                  ) : (
+                    <ChevronRightIcon className="w-4 h-4 text-text-muted" />
+                  )}
+                </button>
+                
+                {/* 2차 뎁스 */}
+                {expandedMenus.has(item.id) && (
+                  <div className="bg-background-secondary/50">
+                    {item.children.map((subItem) => (
+                      <Link
+                        key={subItem.id}
+                        href={subItem.href}
+                        className="flex items-center space-x-3 px-8 py-2 hover:bg-background-secondary transition-colors duration-150"
+                        onClick={onClose}
+                      >
+                        <subItem.icon className="w-4 h-4 text-text-muted" />
+                        <span className="text-sm text-text-secondary">
+                          {subItem.name}
+                        </span>
+                      </Link>
+                    ))}
+                  </div>
+                )}
               </div>
-            </>
-          ) : (
-            <div className="space-y-2 px-4">
-              {getUserMenu(false).map((item) => (
-                <Link key={item.id} href={item.href}>
-                  <Button 
-                    variant={item.id === 'signup' ? 'primary' : 'secondary'} 
-                    size="sm" 
-                    className="w-full justify-center"
-                    onClick={onClose}
-                  >
-                    {item.name}
-                  </Button>
-                </Link>
-              ))}
-            </div>
-          )}
-        </div>
+            ) : (
+              // 2차 뎁스가 없는 메뉴
+              <Link
+                href={item.href}
+                className="flex items-center space-x-3 px-4 py-3 hover:bg-background-secondary transition-colors duration-150"
+                onClick={onClose}
+              >
+                <item.icon className="w-4 h-4 text-text-muted" />
+                <span className="text-sm font-medium text-text-secondary">
+                  {item.name}
+                </span>
+              </Link>
+            )}
+          </div>
+        ))}
       </nav>
     </div>
   );

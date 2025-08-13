@@ -100,7 +100,7 @@ export default function Home() {
             ]}
             autoPlay={true}
             interval={4000}
-            className="max-w-4xl mx-auto"
+            className="max-w-4xl mx-auto px-6 sm:px-8 lg:px-12"
           />
         </div>
       </section>
@@ -118,7 +118,7 @@ export default function Home() {
             </p>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 px-6 sm:px-8 lg:px-12">
             {features.map((feature, index) => (
               <Card key={index} className="text-center">
                 <div className="text-4xl mb-4">{feature.icon}</div>
@@ -146,7 +146,7 @@ export default function Home() {
             </p>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 px-6 sm:px-8 lg:px-12">
             <ImageCard
               image={{
                 src: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&h=600&fit=crop",

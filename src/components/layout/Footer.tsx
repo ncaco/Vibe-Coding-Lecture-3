@@ -65,58 +65,63 @@ const Footer: React.FC = () => {
 
   return (
     <footer className="bg-background-secondary border-t border-border">
-      <div className="container-custom py-16">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-8">
-          {/* Logo and description */}
-          <div className="lg:col-span-1">
-            <Link href="/" className="flex items-center space-x-2 mb-4">
-              <div className="w-8 h-8 bg-accent rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-lg">V</span>
+      <div className="px-6 sm:px-8 lg:px-12 py-12 lg:py-16">
+        <div className="max-w-7xl mx-auto">
+          {/* Main footer content */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-6 gap-8 lg:gap-12">
+            {/* Logo and description */}
+            <div className="sm:col-span-1 lg:col-span-1">
+              <Link href="/" className="flex items-center space-x-2 mb-6">
+                <div className="w-8 h-8 bg-accent rounded-lg flex items-center justify-center">
+                  <span className="text-white font-bold text-lg">V</span>
+                </div>
+                <span className="text-xl font-bold text-text">Vibe</span>
+              </Link>
+              <p className="text-text-secondary text-sm leading-relaxed max-w-xs">
+                Plan and build your product with modern design system. 
+                Purpose-built for modern product development.
+              </p>
+            </div>
+
+            {/* Footer links */}
+            {footerSections.map((section) => (
+              <div key={section.title} className="sm:col-span-1">
+                <h3 className="text-text font-semibold mb-4 text-sm uppercase tracking-wider">
+                  {section.title}
+                </h3>
+                <ul className="space-y-3">
+                  {section.links.map((link) => (
+                    <li key={link.name}>
+                      <Link
+                        href={link.href}
+                        className="text-text-secondary hover:text-text transition-colors duration-200 text-sm block py-1"
+                      >
+                        {link.name}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
               </div>
-              <span className="text-xl font-bold text-text">Vibe</span>
-            </Link>
-            <p className="text-text-secondary text-sm leading-relaxed">
-              Plan and build your product with modern design system. 
-              Purpose-built for modern product development.
-            </p>
+            ))}
           </div>
 
-          {/* Footer links */}
-          {footerSections.map((section) => (
-            <div key={section.title}>
-              <h3 className="text-text font-semibold mb-4">{section.title}</h3>
-              <ul className="space-y-3">
-                {section.links.map((link) => (
-                  <li key={link.name}>
-                    <Link
-                      href={link.href}
-                      className="text-text-secondary hover:text-text transition-colors duration-200 text-sm"
-                    >
-                      {link.name}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
-        </div>
-
-        {/* Bottom section */}
-        <div className="mt-12 pt-8 border-t border-border">
-          <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
-            <p className="text-text-secondary text-sm">
-              © 2024 Vibe. All rights reserved.
-            </p>
-            <div className="flex items-center space-x-6">
-              <Link href="/privacy" className="text-text-secondary hover:text-text transition-colors duration-200 text-sm">
-                Privacy
-              </Link>
-              <Link href="/terms" className="text-text-secondary hover:text-text transition-colors duration-200 text-sm">
-                Terms
-              </Link>
-              <Link href="/cookies" className="text-text-secondary hover:text-text transition-colors duration-200 text-sm">
-                Cookies
-              </Link>
+          {/* Bottom section */}
+          <div className="mt-12 pt-8 border-t border-border">
+            <div className="flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0">
+              <p className="text-text-secondary text-sm text-center sm:text-left">
+                © 2024 Vibe. All rights reserved.
+              </p>
+              <div className="flex items-center space-x-6">
+                <Link href="/privacy" className="text-text-secondary hover:text-text transition-colors duration-200 text-sm">
+                  Privacy
+                </Link>
+                <Link href="/terms" className="text-text-secondary hover:text-text transition-colors duration-200 text-sm">
+                  Terms
+                </Link>
+                <Link href="/cookies" className="text-text-secondary hover:text-text transition-colors duration-200 text-sm">
+                  Cookies
+                </Link>
+              </div>
             </div>
           </div>
         </div>

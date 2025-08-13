@@ -4,6 +4,7 @@ export { HeaderNavigation } from './HeaderNavigation';
 export { HeaderActions } from './HeaderActions';
 export { HeaderMobileMenu } from './HeaderMobileMenu';
 export { NavigationDropdown } from './NavigationDropdown';
+export { ProfileDropdown } from './ProfileDropdown';
 export * from '@/data/menu';
 
 // Default export 추가
