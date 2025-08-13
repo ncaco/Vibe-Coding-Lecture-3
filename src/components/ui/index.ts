@@ -9,3 +9,4 @@ export { Form, FormField, FormLabel, FormError, FormDescription } from './Form';
 export { default as Divider } from './Divider';
 export { default as SocialButton } from './SocialButton';
 export { default as Checkbox } from './Checkbox';
+export { default as SectionDivider } from './SectionDivider';

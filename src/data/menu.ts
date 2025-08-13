@@ -102,7 +102,11 @@ export const mainNavigation: MenuItem[] = [
     name: 'Components',
     href: '/components',
     icon: CodeBracketIcon,
-    description: '재사용 가능한 UI 컴포넌트로 일관되고 아름다운 디자인을 구현하세요'
+    description: '재사용 가능한 UI 컴포넌트로 일관되고 아름다운 디자인을 구현하세요',
+    children: [
+      { id: 'ui-components', name: 'UI Components', href: '/components', icon: CodeBracketIcon, description: '버튼, 입력 필드, 카드 등 기본 UI 컴포넌트를 확인하세요' },
+      { id: 'sections', name: 'Sections', href: '/components/sections', icon: DocumentTextIcon, description: 'Hero, Features, CTA 등 페이지 섹션 컴포넌트를 확인하세요' }
+    ]
   },
   {
     id: 'contact',
@@ -120,7 +124,8 @@ export const mobileSidebarMenu: MenuSection[] = [
     title: '메인 메뉴',
     items: [
       { id: 'home', name: '홈', href: '/', icon: HomeIcon },
-      { id: 'components', name: 'Components', href: '/components', icon: CodeBracketIcon, badge: 'New' }
+      { id: 'components', name: 'Components', href: '/components', icon: CodeBracketIcon, badge: 'New' },
+      { id: 'sections', name: 'Sections', href: '/components/sections', icon: DocumentTextIcon }
     ]
   },
   {
