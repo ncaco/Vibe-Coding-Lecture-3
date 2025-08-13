@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { useAuth } from '@/hooks/useAuth';
+import { useAuth } from '@/context/AuthProvider';
 import { cn } from '@/lib/utils';
 
 const WelcomeMessage: React.FC = () => {

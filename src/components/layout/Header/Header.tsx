@@ -1,7 +1,7 @@
 'use client';
 
-import { useState } from 'react';
-import { useAuth } from '@/hooks/useAuth';
+import React, { useState } from 'react';
+import { useAuth } from '@/context/AuthProvider';
 import { HeaderLogo } from '@/components/layout/Header/HeaderLogo';
 import { HeaderNavigation } from '@/components/layout/Header/HeaderNavigation';
 import { HeaderActions } from '@/components/layout/Header/HeaderActions';

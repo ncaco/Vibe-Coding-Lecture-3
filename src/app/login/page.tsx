@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Button, Input, Form, FormField, FormLabel, FormError, Divider, SocialButton, Checkbox } from '@/components/ui';
 import { signIn } from '@/lib/auth';
-import { useAuth } from '@/hooks/useAuth';
+import { useAuth } from '@/context/AuthProvider';
 
 export default function LoginPage() {
   const router = useRouter();
