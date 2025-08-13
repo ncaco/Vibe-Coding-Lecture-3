@@ -44,7 +44,7 @@ export const HeaderActions: React.FC<HeaderActionsProps> = ({
         )}
       </div>
 
-      {/* Mobile/Tablet menu button - 오른쪽 끝 배치 */}
+      {/* Mobile/Tablet actions - 오른쪽 끝 배치 */}
       <div className="lg:hidden flex items-center space-x-2 ml-auto">
         {/* 모바일/테블릿 프로필 */}
         {isAuthenticated && (
@@ -53,6 +53,15 @@ export const HeaderActions: React.FC<HeaderActionsProps> = ({
             isAuthenticated={isAuthenticated}
             onLogout={onLogout}
           />
+        )}
+        
+        {/* 모바일에서 로그인되지 않은 상태일 때 로그인 아이콘 */}
+        {!isAuthenticated && (
+          <Link href="/login" className="p-2 text-text-secondary hover:text-text hover:bg-background-secondary rounded-lg transition-colors">
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
+            </svg>
+          </Link>
         )}
         
         <button

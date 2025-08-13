@@ -6,18 +6,30 @@ import { useRouter } from 'next/navigation';
 import { Button, Input, Form, FormField, FormLabel, FormError, Divider, SocialButton, Checkbox } from '@/components/ui';
 import { signIn } from '@/lib/auth';
 import { useAuth } from '@/context/AuthProvider';
+import { useLocalStorage } from '@/hooks/useLocalStorage';
 
 export default function LoginPage() {
   const router = useRouter();
   const { isAuthenticated } = useAuth();
+  
+  // 로컬 스토리지에서 저장된 이메일과 아이디 기억하기 설정 불러오기
+  const [savedEmail, setSavedEmail] = useLocalStorage<string>('rememberedEmail', '');
+  const [rememberEmail, setRememberEmail] = useLocalStorage<boolean>('rememberEmail', false);
+  
   const [formData, setFormData] = useState({
     email: '',
     password: '',
-    rememberEmail: false,
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isLoading, setIsLoading] = useState(false);
   const [successMessage, setSuccessMessage] = useState<string>('');
+
+  // 페이지 로드 시 저장된 이메일 불러오기
+  useEffect(() => {
+    if (rememberEmail && savedEmail) {
+      setFormData(prev => ({ ...prev, email: savedEmail }));
+    }
+  }, [rememberEmail, savedEmail]);
 
   // URL 파라미터에서 메시지 확인
   useEffect(() => {
@@ -36,14 +48,22 @@ export default function LoginPage() {
   }, [isAuthenticated, router]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value, type, checked } = e.target;
+    const { name, value } = e.target;
     setFormData(prev => ({ 
       ...prev, 
-      [name]: type === 'checkbox' ? checked : value 
+      [name]: value 
     }));
     // Clear error when user starts typing
     if (errors[name]) {
       setErrors(prev => ({ ...prev, [name]: '' }));
+    }
+  };
+
+  const handleRememberEmailChange = (checked: boolean) => {
+    setRememberEmail(checked);
+    if (!checked) {
+      // 체크 해제 시 저장된 이메일 삭제
+      setSavedEmail('');
     }
   };
 
@@ -89,6 +109,14 @@ export default function LoginPage() {
 
       if (data?.user) {
         console.log('Login successful:', data.user);
+        
+        // 로그인 성공 시 아이디 기억하기 처리
+        if (rememberEmail) {
+          setSavedEmail(formData.email);
+        } else {
+          setSavedEmail('');
+        }
+        
         // 로그인 성공 시 메인 페이지로 리다이렉트
         router.push('/');
       }
@@ -201,9 +229,8 @@ export default function LoginPage() {
           <div className="flex items-center">
             <Checkbox
               id="rememberEmail"
-              name="rememberEmail"
-              checked={formData.rememberEmail}
-              onChange={handleInputChange}
+              checked={rememberEmail}
+              onChange={(e) => handleRememberEmailChange(e.target.checked)}
             />
             <label 
               htmlFor="rememberEmail" 
@@ -257,7 +284,7 @@ export default function LoginPage() {
                 비밀번호 재설정
               </button>
             </p>
-            <p className="text-xs text-text-muted mt-2">
+            <p className="xs text-text-muted mt-2">
               회원가입 후 이메일 확인이 필요합니다.
             </p>
           </div>
