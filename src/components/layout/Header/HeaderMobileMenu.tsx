@@ -35,7 +35,7 @@ export const HeaderMobileMenu: React.FC<HeaderMobileMenuProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="md:hidden py-4 border-t border-border">
+    <div className="lg:hidden py-4 border-t border-border">
       <nav className="flex flex-col space-y-2">
         {/* 메인 네비게이션 메뉴 */}
         {mainNavigation.map((item) => (

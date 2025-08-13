@@ -1,3 +1,6 @@
+'use client';
+
+import React, { useRef, useEffect, useState } from 'react';
 import Link from 'next/link';
 import {
   SparklesIcon,
@@ -18,8 +21,54 @@ interface NavigationDropdownProps {
 }
 
 export const NavigationDropdown: React.FC<NavigationDropdownProps> = ({ item }) => {
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  const [dropdownPosition, setDropdownPosition] = useState<'left' | 'right'>('left');
+  const [dropdownWidth, setDropdownWidth] = useState('600px');
+
+  useEffect(() => {
+    const updatePosition = () => {
+      if (dropdownRef.current) {
+        const viewportWidth = window.innerWidth;
+        const parentRect = dropdownRef.current.parentElement?.getBoundingClientRect();
+        
+        if (parentRect) {
+          const safeMargin = 20; // 안전 여백
+          const dropdownWidth = viewportWidth < 768 ? viewportWidth - 32 : 
+                               viewportWidth < 1024 ? 500 : 600;
+          
+          // 오른쪽 영역이 부족한 경우 오른쪽 정렬로 변경
+          if (parentRect.left + dropdownWidth > viewportWidth - safeMargin) {
+            setDropdownPosition('right');
+          } else {
+            setDropdownPosition('left');
+          }
+          
+          // 화면 너비에 따라 드롭다운 너비 조정
+          if (viewportWidth < 768) {
+            setDropdownWidth('calc(100vw - 32px)');
+          } else if (viewportWidth < 1024) {
+            setDropdownWidth('500px');
+          } else {
+            setDropdownWidth('600px');
+          }
+        }
+      }
+    };
+
+    updatePosition();
+    window.addEventListener('resize', updatePosition);
+    
+    return () => window.removeEventListener('resize', updatePosition);
+  }, []);
+
   return (
-    <div className="absolute top-full left-0 mt-3 w-[600px] bg-background border border-border rounded-2xl shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
+    <div 
+      ref={dropdownRef}
+      style={{ width: dropdownWidth }}
+      className={`absolute top-full mt-3 bg-background border border-border rounded-2xl shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50 ${
+        dropdownPosition === 'right' ? 'right-0' : 'left-0'
+      }`}
+    >
       <div className="p-6">
         {/* 헤더 섹션 */}
         <div className="border-b border-border pb-4 mb-4">

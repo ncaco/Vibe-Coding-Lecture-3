@@ -21,7 +21,7 @@ export const HeaderActions: React.FC<HeaderActionsProps> = ({
   return (
     <>
       {/* Desktop CTA - 오른쪽 배치 */}
-      <div className="hidden md:flex items-center space-x-3 ml-auto">
+      <div className="hidden lg:flex items-center space-x-3 ml-auto">
         {isAuthenticated ? (
           <ProfileDropdown 
             user={user}
@@ -44,9 +44,9 @@ export const HeaderActions: React.FC<HeaderActionsProps> = ({
         )}
       </div>
 
-      {/* Mobile menu button - 오른쪽 끝 배치 */}
-      <div className="md:hidden flex items-center space-x-2 ml-auto">
-        {/* 모바일 프로필 */}
+      {/* Mobile/Tablet menu button - 오른쪽 끝 배치 */}
+      <div className="lg:hidden flex items-center space-x-2 ml-auto">
+        {/* 모바일/테블릿 프로필 */}
         {isAuthenticated && (
           <ProfileDropdown 
             user={user}

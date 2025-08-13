@@ -1,8 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Hero, WelcomeMessage, CTA, Stats, CarouselSection, Features, ImageCards } from '@/components/sections';
-import { SectionDivider } from '@/components/ui';
+import { Hero, WelcomeMessage, CTA, Stats, CarouselSection, Features, ImageCards, SectionDivider } from '@/components/sections';
 
 export default function SectionsPage() {
     // Hero 섹션 데이터
@@ -111,63 +110,63 @@ export default function SectionsPage() {
     };
 
     return (
-        <div className="min-h-screen bg-background">
-            <SectionDivider
-                title="Welcome Message Section"
-                description="로그인한 사용자를 위한 환영 메시지 섹션입니다."
+        <div className="min-h-screen bg-background overflow-x-hidden">
+            <SectionDivider 
+                title="Section Components Overview"
+                description="Vibe Design System의 모든 섹션 컴포넌트를 확인해보세요"
             />
 
             {/* Hero Section */}
             <Hero {...heroProps} />
 
-            {/* Welcome Message Section */}
-            <SectionDivider
+            <SectionDivider 
                 title="Welcome Message Section"
-                description="로그인한 사용자를 위한 환영 메시지 섹션입니다."
+                description="로그인한 사용자를 위한 환영 메시지 섹션입니다"
             />
+            {/* Welcome Message Section */}
             <WelcomeMessage />
 
-            {/* Stats Section */}
-            <SectionDivider
+            <SectionDivider 
                 title="Stats Section"
-                description="통계 정보를 그리드 형태로 표시하는 섹션입니다."
+                description="통계 정보를 그리드 형태로 표시하는 섹션입니다"
             />
+            {/* Stats Section */}
             <Stats stats={statsData} />
 
-            {/* Carousel Section */}
-            <SectionDivider
+            <SectionDivider 
                 title="Carousel Section"
-                description="슬라이드 형태로 콘텐츠를 표시하는 인터랙티브 섹션입니다."
+                description="슬라이드 형태로 콘텐츠를 표시하는 인터랙티브 섹션입니다"
             />
+            {/* Carousel Section */}
             <CarouselSection {...carouselData} />
 
-            {/* Features Section */}
-            <SectionDivider
+            <SectionDivider 
                 title="Features Section"
-                description="기능 소개를 위한 카드 형태의 섹션으로 아이콘과 설명을 포함합니다."
+                description="기능 소개를 위한 카드 형태의 섹션으로 아이콘과 설명을 포함합니다"
             />
+            {/* Features Section */}
             <Features
                 title="Made for modern product teams"
-                description="Vibe is shaped by the practices and principles that distinguish world-class product teams from the rest: relentless focus, fast execution, and a commitment to quality."
+                description="Build beautiful, accessible products with our design system."
                 features={featuresData}
             />
 
-            {/* Image Cards Section */}
-            <SectionDivider
+            <SectionDivider 
                 title="Image Cards Section"
-                description="이미지와 함께 프로젝트나 제품을 소개하는 카드 섹션입니다."
+                description="이미지와 함께 프로젝트나 제품을 소개하는 카드 섹션입니다"
             />
+            {/* Image Cards Section */}
             <ImageCards
                 title="Featured Projects"
-                description="Explore our latest projects and see how our design system comes to life."
+                description="Discover our latest projects and case studies."
                 projects={projectsData}
             />
 
-            {/* CTA Section */}
-            <SectionDivider
+            <SectionDivider 
                 title="CTA Section"
-                description="사용자 행동을 유도하는 Call-to-Action 섹션입니다."
+                description="사용자 행동을 유도하는 Call-to-Action 섹션입니다"
             />
+            {/* CTA Section */}
             <CTA {...ctaData} />
         </div>
     );

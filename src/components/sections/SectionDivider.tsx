@@ -26,17 +26,17 @@ const SectionDivider: React.FC<SectionDividerProps> = ({
       </div>
       
       {/* 컨텐츠 */}
-      <div className="relative container-custom py-6">
+      <div className="relative container-custom py-4 sm:py-6">
         <div className="text-center">
           {/* 제목 */}
-          <h2 className="text-xl font-bold text-text mb-2 bg-gradient-to-r from-text via-accent to-text bg-clip-text text-transparent">
+          <h2 className="text-lg sm:text-xl font-bold text-text mb-2 bg-gradient-to-r from-text via-accent to-text bg-clip-text text-transparent">
             {title}
           </h2>
           
           {/* 설명 */}
           {description && (
             <div className="relative">
-              <p className="text-text-secondary text-sm max-w-2xl mx-auto leading-relaxed">
+              <p className="text-text-secondary text-xs sm:text-sm max-w-2xl mx-auto leading-relaxed px-2">
                 {description}
               </p>
             </div>

@@ -5,3 +5,4 @@ export { default as Stats } from './Stats';
 export { default as CarouselSection } from './CarouselSection';
 export { default as Features } from './Features';
 export { default as ImageCards } from './ImageCards';
+export { default as SectionDivider } from './SectionDivider';
