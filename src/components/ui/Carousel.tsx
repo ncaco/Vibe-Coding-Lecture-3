@@ -83,7 +83,7 @@ export default function Carousel({
         <>
           <button
             onClick={prevSlide}
-            className="absolute left-4 top-1/2 -translate-y-1/2 z-10 
+            className="absolute left-0 top-1/2 -translate-y-1/2 z-10 
                      bg-background/80 backdrop-blur-sm border border-border 
                      rounded-full w-10 h-10 flex items-center justify-center
                      text-text hover:bg-background-secondary transition-colors duration-200
@@ -106,7 +106,7 @@ export default function Carousel({
           </button>
           <button
             onClick={nextSlide}
-            className="absolute right-4 top-1/2 -translate-y-1/2 z-10 
+            className="absolute right-0 top-1/2 -translate-y-1/2 z-10 
                      bg-background/80 backdrop-blur-sm border border-border 
                      rounded-full w-10 h-10 flex items-center justify-center
                      text-text hover:bg-background-secondary transition-colors duration-200

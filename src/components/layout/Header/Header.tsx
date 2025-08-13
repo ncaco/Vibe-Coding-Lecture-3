@@ -23,7 +23,7 @@ const Header: React.FC = () => {
   if (loading) {
     return (
       <header className={cn(
-        "sticky top-0 z-40 transition-all duration-300 border-b",
+        "fixed top-0 left-0 right-0 z-50 transition-all duration-300 border-b",
         "bg-background/95 backdrop-blur-md border-border shadow-lg"
       )}>
         <div className="container-custom px-4">
@@ -37,7 +37,7 @@ const Header: React.FC = () => {
 
   return (
     <header className={cn(
-      "sticky top-0 z-40 transition-all duration-300 border-b",
+      "fixed top-0 left-0 right-0 z-50 transition-all duration-300 border-b",
       "bg-background/95 backdrop-blur-md border-border shadow-lg"
     )}>
       <div className="container-custom px-4">
