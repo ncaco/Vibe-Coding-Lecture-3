@@ -321,7 +321,8 @@ export const mainNavigation: MenuItem[] = [
     description: '재사용 가능한 UI 컴포넌트로 일관되고 아름다운 디자인을 구현하세요',
     children: [
       { id: 'ui-components', name: 'UI Components', href: '/components', icon: CodeBracketIcon, description: '버튼, 입력 필드, 카드 등 기본 UI 컴포넌트를 확인하세요' },
-      { id: 'sections', name: 'Sections', href: '/components/sections', icon: DocumentTextIcon, description: 'Hero, Features, CTA 등 페이지 섹션 컴포넌트를 확인하세요' }
+      { id: 'sections', name: 'Sections', href: '/components/sections', icon: DocumentTextIcon, description: 'Hero, Features, CTA 등 페이지 섹션 컴포넌트를 확인하세요' },
+      { id: 'widgets', name: 'Widgets', href: '/components/widgets', icon: WrenchScrewdriverIcon, description: '시계, 달력, 날씨 등 다양한 위젯 컴포넌트를 확인하세요' }
     ]
   }
 ];

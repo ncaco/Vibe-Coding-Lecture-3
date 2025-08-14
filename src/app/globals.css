@@ -4,6 +4,7 @@
 
 /* 커스텀 애니메이션 import */
 @import '../styles/animations.css';
+@import '../styles/widget-grid.css';
 
 @layer base {
   :root {

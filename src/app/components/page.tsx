@@ -8,7 +8,6 @@ import Modal from '@/components/ui/Modal';
 import Input from '@/components/ui/Input';
 import Carousel from '@/components/ui/Carousel';
 import ImageCard from '@/components/ui/ImageCard';
-import Hero from '@/components/sections/Hero';
 
 export default function ComponentsPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -44,21 +43,7 @@ export default function ComponentsPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Hero Section */}
-      <Hero
-        title="Component Library"
-        subtitle="Vibe Design System"
-        description="Explore our comprehensive collection of reusable components built with Linear-inspired design principles and TypeScript. Every component is crafted for performance, accessibility, and developer experience."
-        badge="🎨 20+ Components Available"
-        primaryAction={{
-          label: "Get Started",
-          href: "#buttons"
-        }}
-        secondaryAction={{
-          label: "View Documentation",
-          href: "/docs"
-        }}
-      />
+
 
       <div className="container-custom py-16">
 
