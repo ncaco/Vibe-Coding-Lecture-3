@@ -10,7 +10,7 @@ import Calendar from './Calendar';
 import Weather from './Weather';
 import Chart from './Chart';
 import Todo from './Todo';
-import Stats from './Stats';
+import WidgetStats from './Stats';
 import MusicPlayer from './MusicPlayer';
 import Notifications from './Notifications';
 import GoalsTracker from './GoalsTracker';
@@ -238,7 +238,7 @@ const WidgetGrid: React.FC<WidgetGridProps> = ({ className = '' }) => {
           />
         );
       case 'stats':
-        return <Stats {...commonProps} />;
+        return <WidgetStats {...commonProps} />;
       case 'music':
         return <MusicPlayer {...commonProps} />;
       case 'notifications':

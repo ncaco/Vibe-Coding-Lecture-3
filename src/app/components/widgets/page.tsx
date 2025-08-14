@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Clock, Calendar, Weather, Chart, Todo, Stats, MusicPlayer, Notifications, GoalsTracker, WebSearch, QuickNotes, SystemMonitor, WidgetGrid } from '@/components/widgets';
+import { Clock, Calendar, Weather, Chart, Todo, WidgetStats, MusicPlayer, Notifications, GoalsTracker, WebSearch, QuickNotes, SystemMonitor, WidgetGrid } from '@/components/widgets';
 import { Card } from '@/components/ui';
 import { Button } from '@/components/ui';
 import { Badge } from '@/components/ui';
@@ -128,8 +128,8 @@ export default function WidgetsPage() {
   );
 
   const renderStatsWidget = () => (
-    <Stats title="업무 통계" />
-  );
+  <WidgetStats title="업무 통계" />
+);
 
   const renderMusicPlayerWidget = () => (
     <MusicPlayer title="음악 플레이어" />
