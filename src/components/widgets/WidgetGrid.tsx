@@ -43,7 +43,14 @@ const WidgetGrid: React.FC<WidgetGridProps> = ({ className = '' }) => {
     { id: 'calendar-1', type: 'calendar', title: '일정 관리' },
     { id: 'weather-1', type: 'weather', title: '현재 날씨' },
     { id: 'chart-1', type: 'chart', variant: 'line', title: '매출 추이' },
-    { id: 'todo-1', type: 'todo', title: '할 일 목록' }
+    { id: 'todo-1', type: 'todo', title: '할 일 목록' },
+    { id: 'stats-1', type: 'stats', title: '업무 통계' },
+    { id: 'music-1', type: 'music', title: '음악 플레이어' },
+    { id: 'notifications-1', type: 'notifications', title: '알림 센터' },
+    { id: 'goals-1', type: 'goals', title: '목표 관리' },
+    { id: 'search-1', type: 'search', title: '웹 검색' },
+    { id: 'notes-1', type: 'notes', title: '빠른 메모' },
+    { id: 'system-1', type: 'system', title: '시스템 모니터' }
   ]);
 
   // 위젯별 최소 크기 설정
@@ -85,28 +92,56 @@ const WidgetGrid: React.FC<WidgetGridProps> = ({ className = '' }) => {
       { i: 'calendar-1', x: 3, y: 0, w: 5, h: 4 },
       { i: 'weather-1', x: 8, y: 0, w: 3, h: 3 },
       { i: 'chart-1', x: 0, y: 2, w: 4, h: 3 },
-      { i: 'todo-1', x: 4, y: 4, w: 4, h: 4 }
+      { i: 'todo-1', x: 4, y: 2, w: 4, h: 4 },
+      { i: 'stats-1', x: 0, y: 6, w: 4, h: 3 },
+      { i: 'music-1', x: 4, y: 6, w: 4, h: 4 },
+      { i: 'notifications-1', x: 0, y: 9, w: 4, h: 4 },
+      { i: 'goals-1', x: 4, y: 10, w: 5, h: 4 },
+      { i: 'search-1', x: 0, y: 13, w: 4, h: 3 },
+      { i: 'notes-1', x: 4, y: 14, w: 4, h: 4 },
+      { i: 'system-1', x: 0, y: 18, w: 4, h: 4 }
     ],
     md: [
       { i: 'clock-1', x: 0, y: 0, w: 4, h: 2 },
       { i: 'calendar-1', x: 4, y: 0, w: 5, h: 4 },
       { i: 'weather-1', x: 0, y: 2, w: 4, h: 3 },
-      { i: 'chart-1', x: 4, y: 4, w: 5, h: 3 },
-      { i: 'todo-1', x: 0, y: 5, w: 4, h: 4 }
+      { i: 'chart-1', x: 4, y: 2, w: 5, h: 3 },
+      { i: 'todo-1', x: 0, y: 5, w: 4, h: 4 },
+      { i: 'stats-1', x: 4, y: 5, w: 5, h: 3 },
+      { i: 'music-1', x: 0, y: 9, w: 4, h: 4 },
+      { i: 'notifications-1', x: 4, y: 9, w: 5, h: 4 },
+      { i: 'goals-1', x: 0, y: 13, w: 5, h: 4 },
+      { i: 'search-1', x: 5, y: 13, w: 4, h: 3 },
+      { i: 'notes-1', x: 0, y: 17, w: 4, h: 4 },
+      { i: 'system-1', x: 4, y: 17, w: 5, h: 4 }
     ],
     sm: [
       { i: 'clock-1', x: 0, y: 0, w: 3, h: 2 },
       { i: 'calendar-1', x: 0, y: 2, w: 3, h: 4 },
       { i: 'weather-1', x: 0, y: 6, w: 3, h: 3 },
       { i: 'chart-1', x: 0, y: 9, w: 3, h: 3 },
-      { i: 'todo-1', x: 0, y: 12, w: 3, h: 4 }
+      { i: 'todo-1', x: 0, y: 12, w: 3, h: 4 },
+      { i: 'stats-1', x: 0, y: 16, w: 3, h: 3 },
+      { i: 'music-1', x: 0, y: 19, w: 3, h: 4 },
+      { i: 'notifications-1', x: 0, y: 23, w: 3, h: 4 },
+      { i: 'goals-1', x: 0, y: 27, w: 3, h: 4 },
+      { i: 'search-1', x: 0, y: 31, w: 3, h: 3 },
+      { i: 'notes-1', x: 0, y: 34, w: 3, h: 4 },
+      { i: 'system-1', x: 0, y: 38, w: 3, h: 4 }
     ],
     xs: [
       { i: 'clock-1', x: 0, y: 0, w: 2, h: 2 },
       { i: 'calendar-1', x: 0, y: 2, w: 2, h: 4 },
       { i: 'weather-1', x: 0, y: 6, w: 2, h: 3 },
       { i: 'chart-1', x: 0, y: 9, w: 2, h: 3 },
-      { i: 'todo-1', x: 0, y: 12, w: 2, h: 4 }
+      { i: 'todo-1', x: 0, y: 12, w: 2, h: 4 },
+      { i: 'stats-1', x: 0, y: 16, w: 2, h: 3 },
+      { i: 'music-1', x: 0, y: 19, w: 2, h: 4 },
+      { i: 'notifications-1', x: 0, y: 23, w: 2, h: 4 },
+      { i: 'goals-1', x: 0, y: 27, w: 2, h: 4 },
+      { i: 'search-1', x: 0, y: 31, w: 2, h: 3 },
+      { i: 'notes-1', x: 0, y: 34, w: 2, h: 4 },
+      { i: 'system-1', x: 0, y: 38, w: 2, h: 4 }
     ]
   });
 
@@ -364,7 +399,12 @@ const WidgetGrid: React.FC<WidgetGridProps> = ({ className = '' }) => {
               <div className="widget-header">
                 <span className="widget-title">{widget.title}</span>
                 <button
-                  onClick={() => removeWidget(widget.id)}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    removeWidget(widget.id);
+                  }}
+                  onMouseDown={(e) => e.stopPropagation()}
                   className="widget-remove-btn"
                   title="위젯 제거"
                 >
