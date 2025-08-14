@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Clock, Calendar, Weather, Chart, Todo, WidgetGrid } from '@/components/widgets';
+import { Clock, Calendar, Weather, Chart, Todo, Stats, MusicPlayer, Notifications, GoalsTracker, WebSearch, QuickNotes, SystemMonitor, WidgetGrid } from '@/components/widgets';
 import { Card } from '@/components/ui';
 import { Button } from '@/components/ui';
 import { Badge } from '@/components/ui';
@@ -35,6 +35,41 @@ export default function WidgetsPage() {
     todo: {
       name: '할 일 목록',
       description: '할 일 관리 및 우선순위 설정 위젯',
+      variants: ['default']
+    },
+    stats: {
+      name: '통계',
+      description: '데이터 통계 및 트렌드 표시 위젯',
+      variants: ['default']
+    },
+    music: {
+      name: '음악 플레이어',
+      description: '음악 재생 및 플레이리스트 관리 위젯',
+      variants: ['default']
+    },
+    notifications: {
+      name: '알림',
+      description: '알림 관리 및 필터링 위젯',
+      variants: ['default']
+    },
+    goals: {
+      name: '목표 추적',
+      description: '목표 설정 및 진행률 추적 위젯',
+      variants: ['default']
+    },
+    search: {
+      name: '웹 검색',
+      description: '검색 기능 및 북마크 관리 위젯',
+      variants: ['default']
+    },
+    notes: {
+      name: '빠른 메모',
+      description: '빠른 메모 작성 및 관리 위젯',
+      variants: ['default']
+    },
+    system: {
+      name: '시스템 모니터',
+      description: '시스템 리소스 사용량 모니터링 위젯',
       variants: ['default']
     }
   };
@@ -92,6 +127,34 @@ export default function WidgetsPage() {
     <Todo title="개인 할 일" maxItems={15} />
   );
 
+  const renderStatsWidget = () => (
+    <Stats title="업무 통계" />
+  );
+
+  const renderMusicPlayerWidget = () => (
+    <MusicPlayer title="음악 플레이어" />
+  );
+
+  const renderNotificationsWidget = () => (
+    <Notifications title="알림 센터" />
+  );
+
+  const renderGoalsTrackerWidget = () => (
+    <GoalsTracker title="목표 관리" />
+  );
+
+  const renderWebSearchWidget = () => (
+    <WebSearch title="웹 검색" />
+  );
+
+  const renderQuickNotesWidget = () => (
+    <QuickNotes title="빠른 메모" />
+  );
+
+  const renderSystemMonitorWidget = () => (
+    <SystemMonitor title="시스템 모니터" />
+  );
+
   return (
     <div className="min-h-screen bg-background">
       <div className="container-custom py-16">
@@ -103,7 +166,7 @@ export default function WidgetsPage() {
             각 위젯은 독립적으로 작동하며 필요에 따라 커스터마이징할 수 있습니다.
           </p>
           <div className="mt-6">
-            <Badge variant="primary" size="lg">🎯 5+ 위젯 컴포넌트</Badge>
+            <Badge variant="primary" size="lg">🎯 12+ 위젯 컴포넌트</Badge>
           </div>
         </div>
 
@@ -139,7 +202,7 @@ export default function WidgetsPage() {
         {viewMode === 'demo' && (
           <Card className="mb-12 p-6">
             <h2 className="text-2xl font-bold text-text mb-6">위젯 선택</h2>
-            <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-5 lg:grid-cols-6 gap-4">
               {Object.entries(widgetConfigs).map(([id, config]) => (
                 <button
                   key={id}
@@ -244,6 +307,118 @@ export default function WidgetsPage() {
                 </div>
                 <div className="max-w-2xl mx-auto">
                   {renderTodoWidget()}
+                </div>
+              </section>
+            )}
+
+            {/* 통계 위젯 */}
+            {selectedWidgets.includes('stats') && (
+              <section>
+                <div className="text-center mb-8">
+                  <h2 className="text-3xl font-bold text-text mb-4">통계 위젯</h2>
+                  <p className="text-text-secondary">
+                    데이터 통계와 트렌드를 시각적으로 표시하는 위젯입니다.
+                    KPI 지표, 성장률, 비교 데이터 등을 직관적으로 확인할 수 있습니다.
+                  </p>
+                </div>
+                <div className="max-w-6xl mx-auto">
+                  {renderStatsWidget()}
+                </div>
+              </section>
+            )}
+
+            {/* 음악 플레이어 위젯 */}
+            {selectedWidgets.includes('music') && (
+              <section>
+                <div className="text-center mb-8">
+                  <h2 className="text-3xl font-bold text-text mb-4">음악 플레이어 위젯</h2>
+                  <p className="text-text-secondary">
+                    음악 재생과 플레이리스트 관리를 위한 위젯입니다.
+                    재생/일시정지, 이전/다음 곡, 볼륨 조절, 셔플, 반복 기능을 제공합니다.
+                  </p>
+                </div>
+                <div className="max-w-2xl mx-auto">
+                  {renderMusicPlayerWidget()}
+                </div>
+              </section>
+            )}
+
+            {/* 알림 위젯 */}
+            {selectedWidgets.includes('notifications') && (
+              <section>
+                <div className="text-center mb-8">
+                  <h2 className="text-3xl font-bold text-text mb-4">알림 위젯</h2>
+                  <p className="text-text-secondary">
+                    다양한 알림을 관리하고 필터링할 수 있는 위젯입니다.
+                    이메일, 메시지, 시스템 알림 등을 카테고리별로 구분하여 표시합니다.
+                  </p>
+                </div>
+                <div className="max-w-4xl mx-auto">
+                  {renderNotificationsWidget()}
+                </div>
+              </section>
+            )}
+
+            {/* 목표 추적 위젯 */}
+            {selectedWidgets.includes('goals') && (
+              <section>
+                <div className="text-center mb-8">
+                  <h2 className="text-3xl font-bold text-text mb-4">목표 추적 위젯</h2>
+                  <p className="text-text-secondary">
+                    개인 및 업무 목표를 설정하고 진행률을 추적하는 위젯입니다.
+                    목표 추가, 완료 체크, 진행률 시각화, 마감일 관리 기능을 제공합니다.
+                  </p>
+                </div>
+                <div className="max-w-4xl mx-auto">
+                  {renderGoalsTrackerWidget()}
+                </div>
+              </section>
+            )}
+
+            {/* 웹 검색 위젯 */}
+            {selectedWidgets.includes('search') && (
+              <section>
+                <div className="text-center mb-8">
+                  <h2 className="text-3xl font-bold text-text mb-4">웹 검색 위젯</h2>
+                  <p className="text-text-secondary">
+                    웹 검색과 북마크 관리를 위한 위젯입니다.
+                    검색어 입력, 최근 검색 기록, 즐겨찾기 북마크, 검색 결과 표시 기능을 제공합니다.
+                  </p>
+                </div>
+                <div className="max-w-4xl mx-auto">
+                  {renderWebSearchWidget()}
+                </div>
+              </section>
+            )}
+
+            {/* 빠른 메모 위젯 */}
+            {selectedWidgets.includes('notes') && (
+              <section>
+                <div className="text-center mb-8">
+                  <h2 className="text-3xl font-bold text-text mb-4">빠른 메모 위젯</h2>
+                  <p className="text-text-secondary">
+                    빠른 메모를 작성하고 관리할 수 있는 위젯입니다.
+                    카테고리별 분류, 검색, 고정, 편집 기능을 제공하며 로컬 스토리지에 저장됩니다.
+                  </p>
+                </div>
+                <div className="max-w-4xl mx-auto">
+                  {renderQuickNotesWidget()}
+                </div>
+              </section>
+            )}
+
+            {/* 시스템 모니터 위젯 */}
+            {selectedWidgets.includes('system') && (
+              <section>
+                <div className="text-center mb-8">
+                  <h2 className="text-3xl font-bold text-text mb-4">시스템 모니터 위젯</h2>
+                  <p className="text-text-secondary">
+                    시스템 리소스 사용량을 실시간으로 모니터링하는 위젯입니다.
+                    CPU, 메모리, 디스크, 네트워크 사용률과 온라인 상태를 시각적으로 표시합니다.
+                  </p>
+                </div>
+                <div className="max-w-4xl mx-auto">
+                  {renderSystemMonitorWidget()}
                 </div>
               </section>
             )}

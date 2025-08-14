@@ -2,19 +2,34 @@
 
 import React, { useState, useCallback } from 'react';
 import { Responsive, WidthProvider } from 'react-grid-layout';
-import { Card } from '@/components/ui';
-import { Clock, Calendar, Weather, Chart, Todo } from '@/components/widgets';
+import { X, Plus } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { Card } from '@/components/ui';
+import Clock from './Clock';
+import Calendar from './Calendar';
+import Weather from './Weather';
+import Chart from './Chart';
+import Todo from './Todo';
+import Stats from './Stats';
+import MusicPlayer from './MusicPlayer';
+import Notifications from './Notifications';
+import GoalsTracker from './GoalsTracker';
+import WebSearch from './WebSearch';
+import QuickNotes from './QuickNotes';
+import SystemMonitor from './SystemMonitor';
 import 'react-grid-layout/css/styles.css';
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
+// 위젯 타입 정의
+type WidgetType = 'clock' | 'calendar' | 'weather' | 'chart' | 'todo' | 'stats' | 'music' | 'notifications' | 'goals' | 'search' | 'notes' | 'system';
+
 interface WidgetItem {
   id: string;
-  type: 'clock' | 'calendar' | 'weather' | 'chart' | 'todo';
+  type: WidgetType;
+  title: string;
   variant?: string;
-  title?: string;
-  props?: Record<string, any>;
+  chartType?: string;
 }
 
 interface WidgetGridProps {
@@ -24,7 +39,7 @@ interface WidgetGridProps {
 const WidgetGrid: React.FC<WidgetGridProps> = ({ className = '' }) => {
   // 기본 위젯 설정
   const [widgets, setWidgets] = useState<WidgetItem[]>([
-    { id: 'clock-1', type: 'clock', variant: 'digital', title: '디지털 시계' },
+    { id: 'clock-1', type: 'clock', title: '디지털 시계' },
     { id: 'calendar-1', type: 'calendar', title: '일정 관리' },
     { id: 'weather-1', type: 'weather', title: '현재 날씨' },
     { id: 'chart-1', type: 'chart', variant: 'line', title: '매출 추이' },
@@ -44,6 +59,20 @@ const WidgetGrid: React.FC<WidgetGridProps> = ({ className = '' }) => {
         return { w: 4, h: 3 }; // 차트: 4×3 (가로 4칸, 세로 3칸) - 차트와 범례가 잘 보이도록
       case 'todo':
         return { w: 4, h: 4 }; // 할 일: 4×4 (가로 4칸, 세로 4칸) - 입력 필드와 목록이 잘 보이도록
+      case 'stats':
+        return { w: 4, h: 3 }; // 통계: 4×3 (가로 4칸, 세로 3칸) - 통계 정보가 잘 보이도록
+      case 'music':
+        return { w: 4, h: 4 }; // 음악: 4×4 (가로 4칸, 세로 4칸) - 플레이어와 플레이리스트가 잘 보이도록
+      case 'notifications':
+        return { w: 4, h: 4 }; // 알림: 4×4 (가로 4칸, 세로 4칸) - 알림 목록과 필터가 잘 보이도록
+      case 'goals':
+        return { w: 5, h: 4 }; // 목표: 5×4 (가로 5칸, 세로 4칸) - 목표 목록과 진행률이 잘 보이도록
+      case 'search':
+        return { w: 4, h: 3 }; // 검색: 4×3 (가로 4칸, 세로 3칸) - 검색 폼과 결과가 잘 보이도록
+      case 'notes':
+        return { w: 4, h: 4 }; // 메모: 4×4 (가로 4칸, 세로 4칸) - 메모 작성과 목록이 잘 보이도록
+      case 'system':
+        return { w: 4, h: 4 }; // 시스템: 4×4 (가로 4칸, 세로 4칸) - 시스템 정보와 차트가 잘 보이도록
       default:
         return { w: 3, h: 2 };
     }
@@ -173,6 +202,20 @@ const WidgetGrid: React.FC<WidgetGridProps> = ({ className = '' }) => {
             showFilters={!isCompact}
           />
         );
+      case 'stats':
+        return <Stats {...commonProps} />;
+      case 'music':
+        return <MusicPlayer {...commonProps} />;
+      case 'notifications':
+        return <Notifications {...commonProps} />;
+      case 'goals':
+        return <GoalsTracker {...commonProps} />;
+      case 'search':
+        return <WebSearch {...commonProps} />;
+      case 'notes':
+        return <QuickNotes {...commonProps} />;
+      case 'system':
+        return <SystemMonitor {...commonProps} />;
       default:
         return <div>알 수 없는 위젯</div>;
     }
@@ -222,38 +265,80 @@ const WidgetGrid: React.FC<WidgetGridProps> = ({ className = '' }) => {
     <div className={cn("w-full", className)}>
       {/* 위젯 추가 컨트롤 */}
       <Card className="mb-6 p-4">
-        <div className="flex flex-wrap gap-2">
-          <button
-            onClick={() => addWidget('clock', 'digital')}
-            className="px-3 py-2 bg-accent text-white rounded-lg text-sm hover:bg-accent-hover transition-colors"
-          >
-            + 시계 위젯 (3×2)
-          </button>
-          <button
-            onClick={() => addWidget('calendar')}
-            className="px-3 py-2 bg-accent text-white rounded-lg text-sm hover:bg-accent-hover transition-colors"
-          >
-            + 달력 위젯 (5×4)
-          </button>
-          <button
-            onClick={() => addWidget('weather')}
-            className="px-3 py-2 bg-accent text-white rounded-lg text-sm hover:bg-accent-hover transition-colors"
-          >
-            + 날씨 위젯 (3×3)
-          </button>
-          <button
-            onClick={() => addWidget('chart', 'line')}
-            className="px-3 py-2 bg-accent text-white rounded-lg text-sm hover:bg-accent-hover transition-colors"
-          >
-            + 차트 위젯 (4×3)
-          </button>
-          <button
-            onClick={() => addWidget('todo')}
-            className="px-3 py-2 bg-accent text-white rounded-lg text-sm hover:bg-accent-hover transition-colors"
-          >
-            + 할 일 위젯 (4×4)
-          </button>
-        </div>
+          <div className="flex flex-wrap gap-2 mb-4">
+            <button
+              onClick={() => addWidget('clock', 'digital')}
+              className="px-3 py-2 bg-accent text-white rounded-lg text-sm hover:bg-accent-hover transition-colors"
+            >
+              + 시계 위젯 (3×2)
+            </button>
+            <button
+              onClick={() => addWidget('calendar')}
+              className="px-3 py-2 bg-accent text-white rounded-lg text-sm hover:bg-accent-hover transition-colors"
+            >
+              + 달력 위젯 (5×4)
+            </button>
+            <button
+              onClick={() => addWidget('weather')}
+              className="px-3 py-2 bg-accent text-white rounded-lg text-sm hover:bg-accent-hover transition-colors"
+            >
+              + 날씨 위젯 (3×3)
+            </button>
+            <button
+              onClick={() => addWidget('chart', 'line')}
+              className="px-3 py-2 bg-accent text-white rounded-lg text-sm hover:bg-accent-hover transition-colors"
+            >
+              + 차트 위젯 (4×3)
+            </button>
+            <button
+              onClick={() => addWidget('todo')}
+              className="px-3 py-2 bg-accent text-white rounded-lg text-sm hover:bg-accent-hover transition-colors"
+            >
+              + 할 일 위젯 (4×4)
+            </button>
+            <button
+              onClick={() => addWidget('stats')}
+              className="px-3 py-2 bg-accent text-white rounded-lg text-sm hover:bg-accent-hover transition-colors"
+            >
+              + 통계 위젯 (4×3)
+            </button>
+            <button
+              onClick={() => addWidget('music')}
+              className="px-3 py-2 bg-accent text-white rounded-lg text-sm hover:bg-accent-hover transition-colors"
+            >
+              + 음악 위젯 (4×4)
+            </button>
+            <button
+              onClick={() => addWidget('notifications')}
+              className="px-3 py-2 bg-accent text-white rounded-lg text-sm hover:bg-accent-hover transition-colors"
+            >
+              + 알림 위젯 (4×4)
+            </button>
+            <button
+              onClick={() => addWidget('goals')}
+              className="px-3 py-2 bg-accent text-white rounded-lg text-sm hover:bg-accent-hover transition-colors"
+            >
+              + 목표 위젯 (5×4)
+            </button>
+            <button
+              onClick={() => addWidget('search')}
+              className="px-3 py-2 bg-accent text-white rounded-lg text-sm hover:bg-accent-hover transition-colors"
+            >
+              + 검색 위젯 (4×3)
+            </button>
+            <button
+              onClick={() => addWidget('notes')}
+              className="px-3 py-2 bg-accent text-white rounded-lg text-sm hover:bg-accent-hover transition-colors"
+            >
+              + 빠른 메모 위젯 (4×4)
+            </button>
+            <button
+              onClick={() => addWidget('system')}
+              className="px-3 py-2 bg-accent text-white rounded-lg text-sm hover:bg-accent-hover transition-colors"
+            >
+              + 시스템 모니터 위젯 (4×4)
+            </button>
+          </div>
       </Card>
 
       {/* 위젯 그리드 */}
@@ -303,7 +388,7 @@ const WidgetGrid: React.FC<WidgetGridProps> = ({ className = '' }) => {
             <li>• 위젯의 모서리를 드래그하여 크기를 조정할 수 있습니다</li>
             <li>• 위의 버튼을 클릭하여 새로운 위젯을 추가할 수 있습니다</li>
             <li>• 각 위젯의 × 버튼을 클릭하여 제거할 수 있습니다</li>
-            <li>• 위젯별 최소 크기: 시계(3×2), 달력(5×4), 날씨(3×3), 차트(4×3), 할 일(4×4)</li>
+            <li>• 위젯별 최소 크기: 시계(3×2), 달력(5×4), 날씨(3×3), 차트(4×3), 할 일(4×4), 통계(4×3), 음악(4×4), 알림(4×4), 목표(5×4), 검색(4×3), 메모(4×4), 시스템(4×4)</li>
           </ul>
         </div>
       </Card>
